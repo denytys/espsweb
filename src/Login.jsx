@@ -37,11 +37,11 @@ export default function Login() {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-100">
+    <div className="fixed inset-0 flex items-center justify-center">
       <div className="w-xs md:w-full max-w-sm p-8 bg-white/45 shadow-lg rounded-3xl backdrop-blur-md relative">
         {/* Logo & Title */}
-        <div className="flex flex-col items-center mb-4">
-          <img src="barantin.png" alt="logo" width="80" className="mb-3" />
+        <div className="flex flex-col items-center mb-2">
+          <img src="logo_login.png" alt="logo" width="160" className="mb-2" />
           <p className="text-gray-600 text-lg">Selamat Datang</p>
           <h5 className="font-bold text-xl">di ESPS BARANTIN</h5>
         </div>
@@ -63,8 +63,6 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={{ marginBottom: 16, height: 35, paddingLeft: 15 }}
-            autoComplete="current-password"
-            className="custom-input custom-input-password-wrapper"
           />
 
           <button

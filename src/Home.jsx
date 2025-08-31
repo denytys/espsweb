@@ -58,9 +58,7 @@ export default function Home() {
     <Layout className="w-full min-h-screen text-left">
       <Sider collapsible collapsed={collapsed} trigger={null} theme="light">
         <div className="flex justify-start p-2">
-          <p className="flex flex-row gap-2 text-gray-600 text-lg font-bold pl-2 pr-3 rounded-2xl">
-            <SquaresExclude /> E S P S
-          </p>
+          <img src="logo_login.png" alt="logo" width="100" className="mb-2" />
         </div>
 
         <div className="p-2 text-left">
