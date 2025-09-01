@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { Card, Spin } from "antd"; // 👉 tambahkan ini
 import Home from "./Home";
 import Dashboard from "./pages/Dashboard";
 import IncomingCertificate from "./pages/IncomingCertificate";
@@ -28,10 +28,22 @@ function PrivateRoute({ children }) {
         setIsAuth(res.data?.status);
       })
       .catch(() => setIsAuth(false))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // kasih delay 3 detik sebelum selesai loading
+        setTimeout(() => setLoading(false), 2000);
+      });
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex gap-6 items-center justify-center h-screen">
+        <Spin className="p-6 mb-30" size="large" />
+        <Spin className="p-6 mb-30" size="large" />
+        <Spin className="p-6 mb-30" size="large" />
+      </div>
+    );
+  }
+
   return isAuth ? children : <Navigate to="/login" replace />;
 }
 
