@@ -178,7 +178,7 @@ export default function IncomingCertificate() {
   };
 
   return (
-    <div className="w-full min-h-screen p-2 bg-gray-100">
+    <div className="w-full min-h-screen p-2">
       {/* Loading Modal */}
       <Modal open={loadingModal} footer={null} closable={false} centered>
         <div className="text-center p-4">
