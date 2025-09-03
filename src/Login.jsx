@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Input, message } from "antd";
 import rq from "./helper/request";
+import { logDev } from "../utils/logDev";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function Login() {
         message.error(res.message || "Login gagal");
       }
     } catch (error) {
-      console.error(error);
+      logDev(error);
       message.error(error.response?.data?.message || "Login gagal.");
     } finally {
       setIsLoading(false);

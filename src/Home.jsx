@@ -58,7 +58,7 @@ export default function Home() {
     <Layout className="w-full min-h-screen text-left">
       <Sider collapsible collapsed={collapsed} trigger={null} theme="light">
         <div className="flex justify-start p-2">
-          <img src="logo_login.png" alt="logo" width="100" className="mb-2" />
+          <img src="logo_login.png" alt="logo" width="100" className="mb-1" />
         </div>
 
         <div className="p-2 text-left">

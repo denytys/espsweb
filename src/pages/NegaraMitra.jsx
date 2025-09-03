@@ -14,6 +14,7 @@ import {
 } from "antd";
 import countryMap from "../utils/CountryMap";
 import { FilePenLine } from "lucide-react";
+import { logDev } from "../utils/logDev";
 
 export default function NegaraMitra() {
   const [form] = Form.useForm();
@@ -67,7 +68,7 @@ export default function NegaraMitra() {
         });
       }
     } catch (err) {
-      console.error("Gagal ambil data:", err);
+      logDev("Gagal ambil data:", err);
     }
   };
 
@@ -115,7 +116,7 @@ export default function NegaraMitra() {
         });
       }
     } catch (err) {
-      console.error("Gagal submit:", err);
+      logDev("Gagal submit:", err);
       messageApi.open({
         key,
         type: "error",
@@ -152,7 +153,7 @@ export default function NegaraMitra() {
         messageApi.error("Gagal memperbarui data!");
       }
     } catch (err) {
-      console.error(err);
+      logDev(err);
       messageApi.error("Terjadi kesalahan saat update.");
     }
   };
@@ -274,7 +275,7 @@ export default function NegaraMitra() {
             const values = await editForm.validateFields();
             handleUpdate(selectedRow.key, values);
           } catch (error) {
-            console.log("Validasi gagal:", error);
+            logDev("Validasi gagal:", error);
           }
         }}
         okText="Update"

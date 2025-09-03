@@ -6,6 +6,7 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import countryMap from "../utils/CountryMap";
 import uptMap from "../utils/UptMap";
+import { logDev } from "../utils/logDev";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -49,7 +50,7 @@ export default function OutgoingCertificate() {
       setecertoutData(ecert);
       setephytooutData(ephyto);
     } catch (err) {
-      console.error("Fetch error:", err);
+      logDev("Fetch error:", err);
       setecertoutData([]);
       setephytooutData([]);
     } finally {

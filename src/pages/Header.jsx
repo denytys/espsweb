@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { logDev } from "../utils/logDev";
 
 export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -36,7 +37,7 @@ export default function Header() {
         }
       );
     } catch (err) {
-      console.error("Logout gagal:", err);
+      logDev("Logout gagal:", err);
     }
     sessionStorage.removeItem("token"); // hapus token biar aman
     navigate("/login");
@@ -59,10 +60,10 @@ export default function Header() {
         onClick={toggleDropdown}
         className="flex items-center space-x-2 focus:outline-none cursor-pointer select-none"
       >
-        <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold uppercase">
+        <div className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center uppercase">
           {user?.nama ? user.nama.charAt(0) : "U"}
         </div>
-        <span className="hidden sm:block">{user?.nama || "User"}</span>
+        <span className="text-xs hidden sm:block">{user?.nama || "User"}</span>
         <svg
           className={`w-4 h-4 transition-transform duration-200 ${
             dropdownOpen ? "rotate-180" : ""
@@ -81,7 +82,7 @@ export default function Header() {
       </button>
 
       <div
-        className={`absolute right-0 top-full mt-1 w-44 bg-white/85 shadow-xl rounded-xl z-50 text-sm text-gray-800 transform transition-all duration-200 ease-out origin-top-right ${
+        className={`absolute right-0 top-full mt-1 w-32 bg-white/85 shadow-xl rounded-lg z-50 text-sm text-gray-800 transform transition-all duration-200 ease-out origin-top-right ${
           dropdownOpen
             ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
             : "opacity-0 scale-95 translate-y-4 pointer-events-none"
@@ -93,7 +94,7 @@ export default function Header() {
             navigate("/dashboard");
             setDropdownOpen(false);
           }}
-          className="w-full text-left px-4 py-2 hover:bg-blue-300/20 transition"
+          className="w-full text-left px-4 py-2 hover:bg-blue-300/10 transition"
         >
           Ubah password
         </button>

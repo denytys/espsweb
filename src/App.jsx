@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, Spin } from "antd"; // 👉 tambahkan ini
+import { Spin, Modal } from "antd"; // 👉 tambahkan ini
 import Home from "./Home";
 import Dashboard from "./pages/Dashboard";
 import IncomingCertificate from "./pages/IncomingCertificate";
@@ -30,17 +30,18 @@ function PrivateRoute({ children }) {
       .catch(() => setIsAuth(false))
       .finally(() => {
         // kasih delay 3 detik sebelum selesai loading
-        setTimeout(() => setLoading(false), 2000);
+        setTimeout(() => setLoading(false), 1000);
       });
   }, []);
 
   if (loading) {
     return (
-      <div className="flex gap-6 items-center justify-center h-screen">
-        <Spin className="p-6 mb-30" size="large" />
-        <Spin className="p-6 mb-30" size="large" />
-        <Spin className="p-6 mb-30" size="large" />
-      </div>
+      <Modal open={true} footer={null} closable={false} centered>
+        <div className="text-center p-4">
+          <Spin size="large" />
+          <div className="mt-3 font-semibold">Loading . . .</div>
+        </div>
+      </Modal>
     );
   }
 

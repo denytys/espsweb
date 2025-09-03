@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import countryMap from "../utils/CountryMap";
+import { logDev } from "../utils/logDev";
 
 export default function Dashboard() {
   const currentYear = new Date().getFullYear();
@@ -48,7 +49,7 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setStatsData(res.data))
-      .catch((err) => console.error("Error fetching stats:", err));
+      .catch((err) => logDev("Error fetching stats:", err));
   }, []);
 
   // Fetch table data
@@ -64,7 +65,7 @@ export default function Dashboard() {
       .then((res) => {
         setTableData(Array.isArray(res.data) ? res.data : []);
       })
-      .catch((err) => console.error("Error fetching table data:", err));
+      .catch((err) => logDev("Error fetching table data:", err));
   }, [selectedChart, statsData.year]);
 
   // Fetch chart data
@@ -91,7 +92,7 @@ export default function Dashboard() {
 
         setChartData(months);
       })
-      .catch((error) => console.error("Error fetching chart data:", error));
+      .catch((error) => logDev("Error fetching chart data:", error));
   }, [selectedType, selectedYear]);
 
   const stats = [
