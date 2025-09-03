@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Input, message } from "antd";
 import rq from "./helper/request";
-import { logDev } from "../utils/logDev";
+import { logDev } from "./utils/logDev";
 
 export default function Login() {
   const navigate = useNavigate();
