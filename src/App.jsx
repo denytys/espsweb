@@ -50,7 +50,7 @@ function PrivateRoute({ children }) {
 
 export default function App() {
   return (
-    <Router>
+    <Router basename="/esps/">
       <Routes>
         {/* Login route */}
         <Route path="/login" element={<Login />} />
