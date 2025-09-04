@@ -18,8 +18,7 @@ export default function Login() {
       const response = await rq.post("/auth/login", {
         username,
         password,
-      });
-
+      })
       const res = response.data;
       if (res.status && res.token) {
         sessionStorage.setItem("token", res.token); // simpan token
@@ -29,7 +28,7 @@ export default function Login() {
         message.error(res.message || "Login gagal");
       }
     } catch (error) {
-      console.error(error);
+      // console.error("error LOGIN", error);
       message.error(error.response?.data?.message || "Login gagal.");
     } finally {
       setIsLoading(false);
