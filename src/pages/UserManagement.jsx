@@ -3,6 +3,7 @@ import { Table, Typography, message, Tag, Modal, Form, Input } from "antd";
 import axios from "axios";
 import uptMap from "../utils/UptMap";
 import { FilePenLine } from "lucide-react";
+import { logDev } from "../utils/logDev";
 
 export default function UserManagement() {
   const [userData, setUserData] = useState([]);
@@ -58,7 +59,7 @@ export default function UserManagement() {
         messageApi.error("Gagal memperbarui user!");
       }
     } catch (err) {
-      console.error(err);
+      logDev(err);
       notification.error({
         message: "Kesalahan",
         description: "Terjadi kesalahan saat update.",
@@ -149,7 +150,7 @@ export default function UserManagement() {
             handleUpdate(selectedUser.username, values); // kirim username + data update
             setIsModalOpen(false); // tutup modal setelah update
           } catch (error) {
-            console.log("Validasi gagal:", error);
+            logDev("Validasi gagal:", error);
           }
         }}
         okText="Update"
