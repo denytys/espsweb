@@ -238,11 +238,30 @@ export default function IncomingCertificate() {
         {selectedRecord && (
           <div className="space-y-2 max-h-[70vh] overflow-y-auto">
             {Object.entries(selectedRecord).map(([key, value]) => (
-              <div key={key} className="flex border-b-1 py-1">
+              <div key={key} className="flex border-b-1 border-gray-200 py-1">
                 <div className="w-1/3 font-semibold capitalize">
                   {key.replace(/_/g, " ")}
                 </div>
-                <div className="w-2/3 break-words">{String(value ?? "-")}</div>
+                <div className="w-2/3 break-words">
+                  {key === "xml" || key === "xmlsigned" ? (
+                    <Button
+                      size="small"
+                      type="primary"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(value || "");
+                          message.success(`${key} copied to clipboard!`);
+                        } catch {
+                          message.error("Failed to copy!");
+                        }
+                      }}
+                    >
+                      Copy {key}
+                    </Button>
+                  ) : (
+                    String(value ?? "-")
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -260,7 +279,7 @@ export default function IncomingCertificate() {
               placeholder={["Dari", "Sampai"]}
             />
             <Input.Search
-              placeholder="Search Ecert Out..."
+              placeholder="Search Ecert In..."
               allowClear
               value={searchEcert}
               onChange={(e) => setSearchEcert(e.target.value)} // Golet
@@ -295,7 +314,7 @@ export default function IncomingCertificate() {
               placeholder={["Dari", "Sampai"]}
             />
             <Input.Search
-              placeholder="Search Ecert Out..."
+              placeholder="Search Ecert In..."
               allowClear
               value={searchEphyto}
               onChange={(e) => setSearchEphyto(e.target.value)} // Golet

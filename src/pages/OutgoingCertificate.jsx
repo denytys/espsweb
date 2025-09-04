@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
-import { Table, Input, Modal, Spin, DatePicker, Select, Tag } from "antd";
+import {
+  Table,
+  Input,
+  Modal,
+  Spin,
+  DatePicker,
+  Select,
+  Tag,
+  Button,
+  message,
+} from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -8,6 +18,11 @@ import countryMap from "../utils/CountryMap";
 import uptMap from "../utils/UptMap";
 import { logDev } from "../utils/logDev";
 import { Eye } from "lucide-react";
+import {
+  CopyOutlined,
+  CheckOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -269,13 +284,32 @@ export default function OutgoingCertificate() {
         width={700}
       >
         {selectedRecord && (
-          <div className="space-y-2 max-h-[70vh] overflow-y-auto">
+          <div className="space-y-2 max-h-[50vh] overflow-y-auto">
             {Object.entries(selectedRecord).map(([key, value]) => (
-              <div key={key} className="flex border-b py-1">
+              <div key={key} className="flex border-b-1 border-gray-200 py-1">
                 <div className="w-1/3 font-semibold capitalize">
                   {key.replace(/_/g, " ")}
                 </div>
-                <div className="w-2/3 break-words">{String(value ?? "-")}</div>
+                <div className="w-2/3 break-words">
+                  {key === "xml" ? (
+                    <Button
+                      size="small"
+                      type="primary"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(value || "");
+                          message.success(`${key} copied to clipboard!`);
+                        } catch {
+                          message.error("Failed to copy!");
+                        }
+                      }}
+                    >
+                      Copy {key}
+                    </Button>
+                  ) : (
+                    String(value ?? "-")
+                  )}
+                </div>
               </div>
             ))}
           </div>
