@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Input, message } from "antd";
-import rq from "./helper/request";
+// import rq from "./helper/request";
 import { logDev } from "./utils/logDev";
 
 export default function Login() {
@@ -16,18 +16,27 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await rq.post("/auth/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_ESPS_BE}/auth/login`,
+        {
+          username,
+          password,
+        }
+      );
 
       const res = response.data;
-      if (res.status && res.token) {
-        sessionStorage.setItem("token", res.token); // simpan token
+      if (
+        res.status &&
+        typeof res.token === "string" &&
+        res.token.includes(".")
+      ) {
+        sessionStorage.setItem("token", res.token);
+        logDev("JWT token tersimpan:", res.token);
         message.success("Login berhasil");
         navigate("/dashboard");
       } else {
-        message.error(res.message || "Login gagal");
+        logDev("Token bukan JWT:", res.token);
+        message.error(res.message || "Login gagal (token tidak valid)");
       }
     } catch (error) {
       logDev(error);

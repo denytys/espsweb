@@ -6,6 +6,7 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import countryMap from "../utils/CountryMap";
 import { logDev } from "../utils/logDev";
+import { Eye } from "lucide-react";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -19,6 +20,8 @@ export default function IncomingCertificate() {
   const [selectedEcertDateRange, setSelectedEcertDateRange] = useState(null);
   const [selectedEphytoDateRange, setSelectedEphytoDateRange] = useState(null);
   const token = sessionStorage.getItem("token");
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   const fetchData = async () => {
     setLoadingModal(true);
@@ -109,6 +112,16 @@ export default function IncomingCertificate() {
 
   const smallCellStyle = { fontSize: "12px", padding: "8px 16px" };
 
+  const handleEdit = (record) => {
+    setSelectedRecord(record);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleCancelDetail = () => {
+    setIsDetailModalOpen(false);
+    setSelectedRecord(null);
+  };
+
   const ecertColumns = [
     { title: "Tgl Sertifikat", dataIndex: "tgl_cert", key: "tgl_cert" },
     { title: "No Sertifikat", dataIndex: "no_cert", key: "no_cert" },
@@ -118,6 +131,19 @@ export default function IncomingCertificate() {
     { title: "Negara Asal", dataIndex: "neg_asal", key: "neg_asal" },
     { title: "Pelabuhan Tujuan", dataIndex: "port_tuju", key: "port_tuju" },
     { title: "Kota Tujuan", dataIndex: "tujuan", key: "tujuan" },
+    {
+      title: "Act",
+      dataIndex: "act",
+      key: "act",
+      render: (_, record) => (
+        <div
+          onClick={() => handleEdit(record)}
+          className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+        >
+          <Eye size={16} />
+        </div>
+      ),
+    },
   ].map((col) => ({
     ...col,
     onHeaderCell: () => ({ style: smallCellStyle }),
@@ -163,6 +189,19 @@ export default function IncomingCertificate() {
         );
       },
     },
+    {
+      title: "Act",
+      dataIndex: "act",
+      key: "act",
+      render: (_, record) => (
+        <div
+          onClick={() => handleEdit(record)}
+          className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+        >
+          <Eye size={16} />
+        </div>
+      ),
+    },
   ].map((col) => ({
     ...col,
     onHeaderCell: () => ({ style: smallCellStyle }),
@@ -186,6 +225,28 @@ export default function IncomingCertificate() {
           <Spin size="large" />
           <div className="mt-3 font-semibold">Loading . . . </div>
         </div>
+      </Modal>
+
+      {/* Modal Detail Record */}
+      <Modal
+        title="Detail Data"
+        open={isDetailModalOpen}
+        onCancel={handleCancelDetail}
+        footer={null}
+        width={700}
+      >
+        {selectedRecord && (
+          <div className="space-y-2 max-h-[70vh] overflow-y-auto">
+            {Object.entries(selectedRecord).map(([key, value]) => (
+              <div key={key} className="flex border-b-1 py-1">
+                <div className="w-1/3 font-semibold capitalize">
+                  {key.replace(/_/g, " ")}
+                </div>
+                <div className="w-2/3 break-words">{String(value ?? "-")}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </Modal>
 
       {/* Ecert In */}

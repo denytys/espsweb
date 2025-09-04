@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Spin, Modal } from "antd"; // 👉 tambahkan ini
+import { Spin, Modal } from "antd";
 import Home from "./Home";
 import Dashboard from "./pages/Dashboard";
 import IncomingCertificate from "./pages/IncomingCertificate";

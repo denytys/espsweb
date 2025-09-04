@@ -110,7 +110,7 @@ export default function Dashboard() {
     },
     {
       title: "Ecert Out",
-      value: statsData.ecert_out || 0,
+      value: statsData.eah_out || 0,
       icon: <LogoutOutlined />,
       color: "bg-green-500",
     },
@@ -170,7 +170,7 @@ export default function Dashboard() {
             >
               <Select.Option value="ecertin">Ecert In</Select.Option>
               <Select.Option value="ephytoin">Ephyto In</Select.Option>
-              <Select.Option value="ecertout">Ecert Out</Select.Option>
+              <Select.Option value="eahout">Ecert Out</Select.Option>
               <Select.Option value="ephytoout">Ephyto Out</Select.Option>
             </Select>
           </div>
@@ -201,7 +201,7 @@ export default function Dashboard() {
               >
                 <Select.Option value="ecertin">Ecert In</Select.Option>
                 <Select.Option value="ephytoin">Ephyto In</Select.Option>
-                <Select.Option value="ecertout">Ecert Out</Select.Option>
+                <Select.Option value="eahout">Ecert Out</Select.Option>
                 <Select.Option value="ephytoout">Ephyto Out</Select.Option>
               </Select>
               <Select
