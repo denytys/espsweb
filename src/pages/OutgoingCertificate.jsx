@@ -28,24 +28,27 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
 export default function OutgoingCertificate() {
-  const [ecertoutData, setecertoutData] = useState([]);
+  const [eahoutData, seteahoutData] = useState([]);
   const [ephytooutData, setephytooutData] = useState([]);
-  const [searchEcert, setSearchEcert] = useState("");
+  const [searcheah, setSearcheah] = useState("");
   const [searchEphyto, setSearchEphyto] = useState("");
   const [loadingModal, setLoadingModal] = useState(false);
-  const [selectedEcertDateRange, setSelectedEcertDateRange] = useState(null);
+  const [selectedeahDateRange, setSelectedeahDateRange] = useState(null);
   const [selectedEphytoDateRange, setSelectedEphytoDateRange] = useState(null);
-  const [selectedEcertUPT, setSelectedEcertUPT] = useState(null);
+  const [selectedeahUPT, setSelectedeahUPT] = useState(null);
   const [selectedEphytoUPT, setSelectedEphytoUPT] = useState(null);
   const token = sessionStorage.getItem("token");
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [xmlContent, setXmlContent] = useState(null);
+  const [xmlLoading, setXmlLoading] = useState(false);
+  const [selectedSource, setSelectedSource] = useState(null);
 
   const fetchData = async () => {
     setLoadingModal(true);
     try {
-      const [ecertRes, ephytoRes] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_ESPS_BE}/outgoing/ecertout`, {
+      const [eahRes, ephytoRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_ESPS_BE}/outgoing/eahout`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
         axios.get(`${import.meta.env.VITE_ESPS_BE}/outgoing/ephytoout`, {
@@ -53,10 +56,10 @@ export default function OutgoingCertificate() {
         }),
       ]);
 
-      const ecert = Array.isArray(ecertRes.data)
-        ? ecertRes.data
-        : Array.isArray(ecertRes.data?.data)
-        ? ecertRes.data.data
+      const eah = Array.isArray(eahRes.data)
+        ? eahRes.data
+        : Array.isArray(eahRes.data?.data)
+        ? eahRes.data.data
         : [];
 
       const ephyto = Array.isArray(ephytoRes.data)
@@ -65,11 +68,11 @@ export default function OutgoingCertificate() {
         ? ephytoRes.data.data
         : [];
 
-      setecertoutData(ecert);
+      seteahoutData(eah);
       setephytooutData(ephyto);
     } catch (err) {
       logDev("Fetch error:", err);
-      setecertoutData([]);
+      seteahoutData([]);
       setephytooutData([]);
     } finally {
       setLoadingModal(false);
@@ -112,13 +115,13 @@ export default function OutgoingCertificate() {
     );
   };
 
-  const ecertoutDataSource = ecertoutData
-    .filter((r) => matchesSearch(r, searchEcert)) // Golet text
+  const eahoutDataSource = eahoutData
+    .filter((r) => matchesSearch(r, searcheah)) // Golet text
     .filter((r) =>
-      matchesAdvancedFilters(r, selectedEcertDateRange, selectedEcertUPT)
+      matchesAdvancedFilters(r, selectedeahDateRange, selectedeahUPT)
     ) // Filter tanggalan karo UPT
     .map((row, i) => ({
-      key: row.id_cert ?? `${row.no_cert ?? "ecert"}-${i}`,
+      key: row.id_cert ?? `${row.no_cert ?? "eah"}-${i}`,
       ...row,
     }));
 
@@ -134,8 +137,10 @@ export default function OutgoingCertificate() {
 
   const smallCellStyle = { fontSize: "12px", padding: "8px 16px" };
 
-  const handleEdit = (record) => {
+  const handleEdit = (record, source) => {
     setSelectedRecord(record);
+    setSelectedSource(source); // <= simpan sumbernya
+    setXmlContent(null); // reset preview tiap buka modal
     setIsDetailModalOpen(true);
   };
 
@@ -144,7 +149,24 @@ export default function OutgoingCertificate() {
     setSelectedRecord(null);
   };
 
-  const ecertColumns = [
+  const handleLoadXml = async (id_cert, keyName, source) => {
+    setXmlLoading(true);
+    try {
+      const res = await axios.get(
+        `${
+          import.meta.env.VITE_ESPS_BE
+        }/outgoing/${source}/${id_cert}/${keyName}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setXmlContent({ key: keyName, value: res.data?.[keyName] || null });
+    } catch {
+      message.error(`Gagal load ${keyName}`);
+    } finally {
+      setXmlLoading(false);
+    }
+  };
+
+  const eahColumns = [
     { title: "Tgl Sertifikat", dataIndex: "tgl_cert", key: "tgl_cert" },
     { title: "No Sertifikat", dataIndex: "no_cert", key: "no_cert" },
     { title: "Jenis Dokumen", dataIndex: "doc_type", key: "doc_type" },
@@ -187,7 +209,7 @@ export default function OutgoingCertificate() {
       key: "act",
       render: (_, record) => (
         <div
-          onClick={() => handleEdit(record)}
+          onClick={() => handleEdit(record, "eahout")}
           className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
         >
           <Eye size={16} />
@@ -243,7 +265,7 @@ export default function OutgoingCertificate() {
       key: "act",
       render: (_, record) => (
         <div
-          onClick={() => handleEdit(record)}
+          onClick={() => handleEdit(record, "ephytoout")}
           className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
         >
           <Eye size={16} />
@@ -277,7 +299,11 @@ export default function OutgoingCertificate() {
 
       {/* Modal Detail Record */}
       <Modal
-        title="Detail Data"
+        title={
+          <div className="bg-gray-100 px-3 py-2 rounded font-semibold">
+            Detail Data
+          </div>
+        }
         open={isDetailModalOpen}
         onCancel={handleCancelDetail}
         footer={null}
@@ -285,69 +311,97 @@ export default function OutgoingCertificate() {
       >
         {selectedRecord && (
           <div className="space-y-2 max-h-[50vh] overflow-y-auto">
+            {/* detail biasa */}
             {Object.entries(selectedRecord).map(([key, value]) => (
-              <div key={key} className="flex border-b-1 border-gray-200 py-1">
+              <div
+                key={key}
+                className="flex ml-2 border-b border-gray-200 py-1"
+              >
                 <div className="w-1/3 font-semibold capitalize">
                   {key.replace(/_/g, " ")}
                 </div>
-                <div className="w-2/3 break-words">
-                  {key === "xml" ? (
+                <div className="w-2/3 break-words">{String(value ?? "-")}</div>
+              </div>
+            ))}
+
+            {/* baris khusus XML (outgoing = xml) */}
+            <div className="flex ml-2 border-b border-gray-200 py-1">
+              <div className="w-1/3 font-semibold">XML</div>
+              <div className="w-2/3 break-words">
+                {xmlContent ? (
+                  <div>
                     <Button
                       size="small"
                       type="primary"
                       onClick={async () => {
                         try {
-                          await navigator.clipboard.writeText(value || "");
-                          message.success(`${key} copied to clipboard!`);
+                          await navigator.clipboard.writeText(
+                            xmlContent.value || ""
+                          );
+                          message.success("xml copied!");
                         } catch {
                           message.error("Failed to copy!");
                         }
                       }}
                     >
-                      Copy {key}
+                      Copy xml
                     </Button>
-                  ) : (
-                    String(value ?? "-")
-                  )}
-                </div>
+                    <pre className="mt-2 p-2 bg-gray-100 rounded max-h-40 overflow-y-auto text-xs">
+                      {xmlContent.value}
+                    </pre>
+                  </div>
+                ) : (
+                  <Button
+                    size="small"
+                    loading={xmlLoading}
+                    onClick={() => {
+                      const id = selectedRecord?.id_cert; // OUTGOING SELALU id_cert
+                      if (!id) return message.error("id_cert tidak ditemukan");
+
+                      handleLoadXml(id, "xml", selectedSource); // ecertout / ephytoout
+                    }}
+                  >
+                    Preview xml
+                  </Button>
+                )}
               </div>
-            ))}
+            </div>
           </div>
         )}
       </Modal>
 
-      {/* Ecert Out */}
+      {/* eah Out */}
       <div className="p-3 bg-white rounded-xl shadow-sm mb-4">
         <div className="flex flex-wrap gap-2 justify-between mb-2">
-          <h3 className="text-lg font-semibold ml-1">Ecert Out</h3>
+          <h3 className="text-lg font-semibold ml-1">eah Out</h3>
           <div className="flex flex-wrap gap-2">
             <DatePicker.RangePicker
-              onChange={(dates) => setSelectedEcertDateRange(dates)} // Tanggalan
+              onChange={(dates) => setSelectedeahDateRange(dates)} // Tanggalan
               style={{ marginBottom: 8 }}
               placeholder={["Dari", "Sampai"]}
             />
             <Select
               allowClear
               placeholder="Pilih UPT"
-              onChange={(value) => setSelectedEcertUPT(value)} // UPT ning kene
-              options={[...new Set(ecertoutData.map((d) => d.upt))]
+              onChange={(value) => setSelectedeahUPT(value)} // UPT ning kene
+              options={[...new Set(eahoutData.map((d) => d.upt))]
                 .filter(Boolean)
                 .map((upt) => ({ label: upt, value: upt }))}
               style={{ width: 150, marginBottom: 8 }}
             />
             <Input.Search
-              placeholder="Search Ecert Out..."
+              placeholder="Search eah Out..."
               allowClear
-              value={searchEcert}
-              onChange={(e) => setSearchEcert(e.target.value)} // Golet
+              value={searcheah}
+              onChange={(e) => setSearcheah(e.target.value)} // Golet
               style={{ width: 250, marginBottom: 8 }}
             />
           </div>
         </div>
 
         <Table
-          columns={ecertColumns}
-          dataSource={ecertoutDataSource.map((item, idx) => ({
+          columns={eahColumns}
+          dataSource={eahoutDataSource.map((item, idx) => ({
             key: idx,
             ...item,
             neg_tuju: countryMap[item.neg_tuju] || item.neg_tuju,
@@ -382,7 +436,7 @@ export default function OutgoingCertificate() {
               style={{ width: 150, marginBottom: 8 }}
             />
             <Input.Search
-              placeholder="Search Ecert Out..."
+              placeholder="Search eah Out..."
               allowClear
               value={searchEphyto}
               onChange={(e) => setSearchEphyto(e.target.value)} // Golet

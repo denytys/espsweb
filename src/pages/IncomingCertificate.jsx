@@ -1,5 +1,15 @@
+// src/pages/IncomingCertificate.jsx
 import { useState, useEffect } from "react";
-import { Table, Input, Modal, Spin, DatePicker, Tag } from "antd";
+import {
+  Table,
+  Input,
+  Modal,
+  Spin,
+  DatePicker,
+  Tag,
+  Button,
+  message,
+} from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -22,6 +32,10 @@ export default function IncomingCertificate() {
   const token = sessionStorage.getItem("token");
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+
+  // state khusus xml/xmlsigned
+  const [xmlLoading, setXmlLoading] = useState(false);
+  const [xmlContent, setXmlContent] = useState(null);
 
   const fetchData = async () => {
     setLoadingModal(true);
@@ -83,10 +97,10 @@ export default function IncomingCertificate() {
       !dateRange[0] ||
       !dateRange[1]
     ) {
-      return true; // langka filter tanggal
+      return true;
     }
 
-    const rowDate = dayjs(row.tgl_cert, "YYYY-MM-DD"); // madakena format tanggalan
+    const rowDate = dayjs(row.tgl_cert, "YYYY-MM-DD");
     return (
       rowDate.isValid() &&
       rowDate.isSameOrAfter(dateRange[0].startOf("day")) &&
@@ -95,16 +109,16 @@ export default function IncomingCertificate() {
   };
 
   const ecertinDataSource = ecertinData
-    .filter((r) => matchesSearch(r, searchEcert)) // Golet text
-    .filter((r) => matchesAdvancedFilters(r, selectedEcertDateRange)) // Filter tanggalan
+    .filter((r) => matchesSearch(r, searchEcert))
+    .filter((r) => matchesAdvancedFilters(r, selectedEcertDateRange))
     .map((row, i) => ({
       key: row.id_cert ?? `${row.no_cert ?? "ecert"}-${i}`,
       ...row,
     }));
 
   const ephytoinDataSource = ephytoinData
-    .filter((r) => matchesSearch(r, searchEphyto)) // Golet text
-    .filter((r) => matchesAdvancedFilters(r, selectedEphytoDateRange)) // Filter tanggalan
+    .filter((r) => matchesSearch(r, searchEphyto))
+    .filter((r) => matchesAdvancedFilters(r, selectedEphytoDateRange))
     .map((row, i) => ({
       key: row.id_hub ?? `${row.no_cert ?? "ephyto"}-${i}`,
       ...row,
@@ -113,13 +127,34 @@ export default function IncomingCertificate() {
   const smallCellStyle = { fontSize: "12px", padding: "8px 16px" };
 
   const handleEdit = (record) => {
-    setSelectedRecord(record);
+    setSelectedRecord({
+      ...record,
+      xmlsigned: null,
+    });
     setIsDetailModalOpen(true);
+    setXmlContent(null); // reset tiap kali buka modal baru
   };
 
   const handleCancelDetail = () => {
     setIsDetailModalOpen(false);
     setSelectedRecord(null);
+    setXmlContent(null);
+  };
+
+  // handler load xml/xmlsigned manual
+  const handleLoadXml = async (id, keyName, source) => {
+    setXmlLoading(true);
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_ESPS_BE}/incoming/${source}/${id}/${keyName}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setXmlContent({ key: keyName, value: res.data?.[keyName] || null });
+    } catch {
+      message.error(`Gagal load ${keyName}`);
+    } finally {
+      setXmlLoading(false);
+    }
   };
 
   const ecertColumns = [
@@ -128,9 +163,7 @@ export default function IncomingCertificate() {
     { title: "Jenis Dokumen", dataIndex: "doc_type", key: "doc_type" },
     { title: "Komoditas", dataIndex: "komo_eng", key: "komo_eng" },
     { title: "Pelabuhan Asal", dataIndex: "port_asal", key: "port_asal" },
-    { title: "Negara Asal", dataIndex: "neg_asal", key: "neg_asal" },
     { title: "Pelabuhan Tujuan", dataIndex: "port_tuju", key: "port_tuju" },
-    { title: "Kota Tujuan", dataIndex: "tujuan", key: "tujuan" },
     {
       title: "Act",
       dataIndex: "act",
@@ -155,10 +188,8 @@ export default function IncomingCertificate() {
     { title: "No Sertifikat", dataIndex: "no_cert", key: "no_cert" },
     { title: "Jenis Dokumen", dataIndex: "doc_type", key: "doc_type" },
     { title: "Komoditas", dataIndex: "komo_eng", key: "komo_eng" },
-    { title: "Pelabuhan Asal", dataIndex: "port_asal", key: "port_asal" },
     { title: "Negara Asal", dataIndex: "neg_asal", key: "neg_asal" },
     { title: "Pelabuhan Tujuan", dataIndex: "port_tuju", key: "port_tuju" },
-    { title: "Kota Tujuan", dataIndex: "kota_tuju", key: "kota_tuju" },
     {
       title: "Asal Data",
       dataIndex: "data_from",
@@ -212,9 +243,6 @@ export default function IncomingCertificate() {
     asw: "red",
     h2h: "green",
     ippc: "geekblue",
-    // stok: "purple",
-    // stok: "orange",
-    // stok: "volcano",
   };
 
   return (
@@ -229,35 +257,77 @@ export default function IncomingCertificate() {
 
       {/* Modal Detail Record */}
       <Modal
-        title="Detail Data"
+        title={
+          <div className="bg-gray-100 px-3 py-2 rounded font-semibold">
+            Detail Data
+          </div>
+        }
         open={isDetailModalOpen}
         onCancel={handleCancelDetail}
         footer={null}
         width={700}
       >
         {selectedRecord && (
-          <div className="space-y-2 max-h-[70vh] overflow-y-auto">
+          <div className="space-y-2 max-h-[50vh] overflow-y-auto">
             {Object.entries(selectedRecord).map(([key, value]) => (
-              <div key={key} className="flex border-b-1 border-gray-200 py-1">
+              <div
+                key={key}
+                className="flex ml-2 border-b border-gray-200 py-1"
+              >
                 <div className="w-1/3 font-semibold capitalize">
                   {key.replace(/_/g, " ")}
                 </div>
                 <div className="w-2/3 break-words">
                   {key === "xml" || key === "xmlsigned" ? (
-                    <Button
-                      size="small"
-                      type="primary"
-                      onClick={async () => {
-                        try {
-                          await navigator.clipboard.writeText(value || "");
-                          message.success(`${key} copied to clipboard!`);
-                        } catch {
-                          message.error("Failed to copy!");
-                        }
-                      }}
-                    >
-                      Copy {key}
-                    </Button>
+                    xmlContent && xmlContent.key === key ? (
+                      <div>
+                        <Button
+                          size="small"
+                          type="primary"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(
+                                xmlContent.value
+                              );
+                              message.success(`${key} copied!`);
+                            } catch {
+                              message.error("Failed to copy!");
+                            }
+                          }}
+                        >
+                          Copy {key}
+                        </Button>
+                        <pre className="mt-2 p-2 bg-gray-100 rounded max-h-40 overflow-y-auto text-xs">
+                          {xmlContent.value}
+                        </pre>
+                      </div>
+                    ) : (
+                      <Button
+                        size="small"
+                        loading={xmlLoading}
+                        onClick={() => {
+                          if (selectedRecord.id_cert) {
+                            // ini ecertin
+                            handleLoadXml(
+                              selectedRecord.id_cert,
+                              key,
+                              "ecertin"
+                            );
+                          } else if (selectedRecord.id_hub) {
+                            // ini ephytoin
+                            handleLoadXml(
+                              selectedRecord.id_hub,
+                              key,
+                              "ephytoin"
+                            );
+                          } else {
+                            message.error("ID tidak ditemukan");
+                          }
+                        }}
+                      >
+                        Preview {key}
+                      </Button>
+                    )
                   ) : (
                     String(value ?? "-")
                   )}
@@ -274,7 +344,7 @@ export default function IncomingCertificate() {
           <h3 className="text-lg font-semibold ml-1">Ecert In</h3>
           <div className="flex flex-wrap gap-2">
             <DatePicker.RangePicker
-              onChange={(dates) => setSelectedEcertDateRange(dates)} // Tanggalan
+              onChange={(dates) => setSelectedEcertDateRange(dates)}
               style={{ marginBottom: 8 }}
               placeholder={["Dari", "Sampai"]}
             />
@@ -282,7 +352,7 @@ export default function IncomingCertificate() {
               placeholder="Search Ecert In..."
               allowClear
               value={searchEcert}
-              onChange={(e) => setSearchEcert(e.target.value)} // Golet
+              onChange={(e) => setSearchEcert(e.target.value)}
               style={{ width: 250, marginBottom: 8 }}
             />
           </div>
@@ -309,15 +379,15 @@ export default function IncomingCertificate() {
           <h3 className="text-lg font-semibold ml-1">Ephyto In</h3>
           <div className="flex flex-wrap gap-2">
             <DatePicker.RangePicker
-              onChange={(dates) => setSelectedEphytoDateRange(dates)} // tanggalan
+              onChange={(dates) => setSelectedEphytoDateRange(dates)}
               style={{ marginBottom: 8 }}
               placeholder={["Dari", "Sampai"]}
             />
             <Input.Search
-              placeholder="Search Ecert In..."
+              placeholder="Search Ephyto In..."
               allowClear
               value={searchEphyto}
-              onChange={(e) => setSearchEphyto(e.target.value)} // Golet
+              onChange={(e) => setSearchEphyto(e.target.value)}
               style={{ width: 250, marginBottom: 8 }}
             />
           </div>

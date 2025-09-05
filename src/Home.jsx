@@ -2,18 +2,17 @@ import React, { useState } from "react";
 import { RightCircleOutlined, LeftCircleOutlined } from "@ant-design/icons";
 import { Button, Menu, Layout } from "antd";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
-import AppHeader from "./pages/Header";
+import Header from "./pages/Header";
 import {
   FolderOutput,
   FolderSymlink,
   LayoutDashboard,
   Settings,
-  SquaresExclude,
 } from "lucide-react";
 
 const { Sider, Content } = Layout;
 
-export default function Home() {
+export default function Home({ darkMode, setDarkMode }) {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -56,7 +55,12 @@ export default function Home() {
 
   return (
     <Layout className="w-full min-h-screen text-left">
-      <Sider collapsible collapsed={collapsed} trigger={null} theme="light">
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        trigger={null}
+        theme={darkMode ? "dark" : "light"}
+      >
         <div className="flex justify-start p-2">
           <img src="logo_login.png" alt="logo" width="100" className="mb-1" />
         </div>
@@ -68,19 +72,23 @@ export default function Home() {
         </div>
         <Menu
           mode="inline"
-          theme="light"
+          theme={darkMode ? "dark" : "light"}
           items={items}
           onClick={onMenuClick}
           selectedKeys={[location.pathname.substring(1)]}
-          style={{
-            fontSize: "12px",
-          }}
+          style={{ fontSize: "12px" }}
         />
       </Sider>
-
       <Layout>
-        <AppHeader />
-        <Content className="bg-gray-100 p-2">
+        {/* Header global */}
+        <Header />
+        <Content
+          className={
+            darkMode
+              ? "bg-gray-900 text-white p-2"
+              : "bg-gray-100 text-black p-2"
+          }
+        >
           <Outlet />
         </Content>
       </Layout>

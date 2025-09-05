@@ -132,7 +132,7 @@ export default function Dashboard() {
   }));
 
   return (
-    <div className="w-full min-h-screen p-2 bg-gray-100">
+    <div className="w-full min-h-screen p-2">
       {/* Row 1: Stats */}
       <div className="bg-white rounded-xl shadow w-full">
         <h2 className="font-semibold ml-5 mb-2 pt-3">

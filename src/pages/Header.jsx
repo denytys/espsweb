@@ -31,19 +31,16 @@ export default function Header() {
     try {
       await axios.post(
         `${import.meta.env.VITE_ESPS_BE}/auth/logout`,
-        {}, // body kosong
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
       );
     } catch (err) {
       logDev("Logout gagal:", err);
     }
-    sessionStorage.removeItem("token"); // hapus token biar aman
+    sessionStorage.removeItem("token");
     navigate("/login");
   };
 
-  // Close dropdown kalau klik di luar
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -56,6 +53,7 @@ export default function Header() {
 
   return (
     <header className="bg-blue-50/40 shadow-lg px-6 py-3 flex justify-end items-center relative">
+      {/* Dropdown User */}
       <button
         onClick={toggleDropdown}
         className="flex items-center space-x-2 focus:outline-none cursor-pointer select-none"
