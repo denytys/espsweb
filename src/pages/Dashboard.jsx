@@ -140,18 +140,18 @@ export default function Dashboard() {
         <h2 className="font-semibold ml-5 mb-2 pt-3">
           Total Ecert dan Ephyto {statsData.year}
         </h2>
-        <div className="flex flex-col md:flex-row items-center justify-center p-2 gap-1 md:gap-2">
+        <div className="flex flex-col md:flex-row items-center justify-center p-2 gap-2 md:gap-4">
           {stats.map((stat) => (
             <div
               key={stat.title}
-              className={`pl-2 pr-33 pt-4 pb-4 gap-3 flex flex-row mb-4 rounded-xl ml-2 mr-2 w-full ${
+              className={`pl-2 pr-12 md:pr-33 pt-4 pb-4 gap-3 flex flex-row mb-4 rounded-xl w-full ${
                 menuTheme === "dark"
                   ? "bg-gray-800 text-white"
                   : "bg-gray-100 text-black"
               }`}
             >
               <div
-                className={`${stat.color} text-white w-8 h-8 flex items-center justify-center rounded-full text-lg`}
+                className={`${stat.color} text-white w-8 h-8 flex items-center justify-center rounded-full text-lg ml-2`}
               >
                 {stat.icon}
               </div>

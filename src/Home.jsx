@@ -1,10 +1,6 @@
-import React, { useState } from "react";
-import {
-  RightCircleOutlined,
-  LeftCircleOutlined,
-  BulbOutlined,
-} from "@ant-design/icons";
-import { Button, Menu, Layout, Switch, ConfigProvider, theme } from "antd";
+import React, { useState, useEffect } from "react";
+import { RightCircleOutlined, LeftCircleOutlined } from "@ant-design/icons";
+import { Button, Menu, Layout, ConfigProvider, theme } from "antd";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
 import {
@@ -12,8 +8,6 @@ import {
   FolderSymlink,
   LayoutDashboard,
   Settings,
-  Moon,
-  Sun,
 } from "lucide-react";
 
 const { Sider, Content } = Layout;
@@ -21,16 +15,20 @@ const { Sider, Content } = Layout;
 export default function Home() {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTheme, setMenuTheme] = useState("light");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
   const navigate = useNavigate();
   const location = useLocation();
 
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const toggleTheme = (checked) => {
-    setMenuTheme(checked ? "dark" : "light");
-  };
+  useEffect(() => {
+    if (isMobile) setCollapsed(true);
+  }, [isMobile]);
 
   const items = [
     {
@@ -72,6 +70,7 @@ export default function Home() {
       }}
     >
       <Layout className="w-full min-h-screen text-left">
+        {/* Sider */}
         <Sider
           collapsible
           collapsed={collapsed}
@@ -82,23 +81,6 @@ export default function Home() {
             <Button type="primary" onClick={() => setCollapsed(!collapsed)}>
               {collapsed ? <RightCircleOutlined /> : <LeftCircleOutlined />}
             </Button>
-
-            {!collapsed && (
-              <Switch
-                checked={menuTheme === "dark"}
-                onChange={toggleTheme}
-                checkedChildren={
-                  <div className="flex items-center justify-center">
-                    <Moon size={14} className="text-white mt-1" />
-                  </div>
-                }
-                unCheckedChildren={
-                  <div className="flex items-center justify-center">
-                    <Sun size={14} className="text-white mt-1" />
-                  </div>
-                }
-              />
-            )}
           </div>
 
           <Menu
@@ -115,6 +97,7 @@ export default function Home() {
           />
         </Sider>
 
+        {/* Main Layout */}
         <Layout>
           <Header menuTheme={menuTheme} setMenuTheme={setMenuTheme} />
           <Content>
