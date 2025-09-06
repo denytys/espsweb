@@ -9,6 +9,7 @@ import {
   Tag,
   Button,
   message,
+  Card,
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -300,7 +301,7 @@ export default function OutgoingCertificate() {
       {/* Modal Detail Record */}
       <Modal
         title={
-          <div className="bg-gray-100 px-3 py-2 rounded font-semibold">
+          <div className="px-2 py-2 bg-gray-400/10 rounded font-semibold">
             Detail Data
           </div>
         }
@@ -317,7 +318,7 @@ export default function OutgoingCertificate() {
                 key={key}
                 className="flex ml-2 border-b border-gray-200 py-1"
               >
-                <div className="w-1/3 font-semibold capitalize">
+                <div className="w-1/4 font-semibold capitalize">
                   {key.replace(/_/g, " ")}
                 </div>
                 <div className="w-2/3 break-words">{String(value ?? "-")}</div>
@@ -326,8 +327,8 @@ export default function OutgoingCertificate() {
 
             {/* baris khusus XML (outgoing = xml) */}
             <div className="flex ml-2 border-b border-gray-200 py-1">
-              <div className="w-1/3 font-semibold">XML</div>
-              <div className="w-2/3 break-words">
+              <div className="w-1/4 font-semibold">XML</div>
+              <div className="w-3/4 break-words">
                 {xmlContent ? (
                   <div>
                     <Button
@@ -346,7 +347,7 @@ export default function OutgoingCertificate() {
                     >
                       Copy xml
                     </Button>
-                    <pre className="mt-2 p-2 bg-gray-100 rounded max-h-40 overflow-y-auto text-xs">
+                    <pre className="mt-2 p-2 border-1 border-gray-400 rounded max-h-40 overflow-y-auto text-xs">
                       {xmlContent.value}
                     </pre>
                   </div>
@@ -371,9 +372,9 @@ export default function OutgoingCertificate() {
       </Modal>
 
       {/* eah Out */}
-      <div className="p-3 bg-white rounded-xl shadow-sm mb-4">
+      <Card className="p-3 shadow-sm !mb-4">
         <div className="flex flex-wrap gap-2 justify-between mb-2">
-          <h3 className="text-lg font-semibold ml-1">eah Out</h3>
+          <h3 className="text-lg font-semibold ml-1">Eah Out</h3>
           <div className="flex flex-wrap gap-2">
             <DatePicker.RangePicker
               onChange={(dates) => setSelectedeahDateRange(dates)} // Tanggalan
@@ -414,10 +415,10 @@ export default function OutgoingCertificate() {
           }}
           bordered
         />
-      </div>
+      </Card>
 
       {/* Ephyto Out */}
-      <div className="p-3 bg-white rounded-xl shadow-sm">
+      <Card className="p-3 rounded-xl shadow-sm">
         <div className="flex flex-wrap gap-2 justify-between mb-2">
           <h3 className="text-lg font-semibold ml-1">Ephyto Out</h3>
           <div className="flex flex-wrap gap-2">
@@ -459,7 +460,7 @@ export default function OutgoingCertificate() {
           }}
           bordered
         />
-      </div>
+      </Card>
     </div>
   );
 }

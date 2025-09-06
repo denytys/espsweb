@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Table, Typography, message, Tag, Modal, Form, Input } from "antd";
+import {
+  Table,
+  Typography,
+  message,
+  Tag,
+  Modal,
+  Form,
+  Input,
+  theme,
+  notification,
+} from "antd";
 import axios from "axios";
 import uptMap from "../utils/UptMap";
 import { FilePenLine } from "lucide-react";
@@ -13,6 +23,9 @@ export default function UserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [form] = Form.useForm();
   const token = sessionStorage.getItem("token");
+
+  // 🎨 ambil token dari ConfigProvider (otomatis ikut dark/light)
+  const { token: antdToken } = theme.useToken();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -34,7 +47,7 @@ export default function UserManagement() {
     };
 
     fetchUsers();
-  }, [messageApi]);
+  }, [messageApi, token]);
 
   const handleUpdate = async (username, values) => {
     try {
@@ -42,7 +55,7 @@ export default function UserManagement() {
         `${import.meta.env.VITE_ESPS_BE}/users/${username}`,
         values,
         {
-          headers: { Authorization: basicAuth },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -81,7 +94,7 @@ export default function UserManagement() {
 
   const columns = [
     {
-      title: "username",
+      title: "Username",
       dataIndex: "username",
       key: "username",
     },
@@ -113,7 +126,7 @@ export default function UserManagement() {
       render: (_, record) => (
         <div
           onClick={() => handleEdit(record)}
-          className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          className="cursor-pointer rounded-full bg-gray-200 hover:bg-blue-500 text-black hover:text-white w-8 h-8 flex items-center justify-center transition-colors duration-200"
         >
           <FilePenLine size={16} />
         </div>
@@ -122,10 +135,24 @@ export default function UserManagement() {
   ];
 
   return (
-    <div className="w-full min-h-screen p-2">
+    <div
+      className="w-full min-h-screen p-2"
+      style={{ background: antdToken.colorBgLayout }}
+    >
       {contextHolder}
-      <div className="bg-white shadow rounded-lg p-4">
-        <div className="items-center border-b border-gray-200 pb-2 gap-2 mb-4">
+
+      <div
+        style={{
+          background: antdToken.colorBgContainer,
+          boxShadow: antdToken.boxShadow,
+          borderRadius: antdToken.borderRadiusLG,
+          padding: 16,
+        }}
+      >
+        <div
+          className="items-center border-b pb-2 gap-2 mb-4"
+          style={{ borderColor: antdToken.colorBorder }}
+        >
           <Typography.Text strong className="text-base">
             User Management
           </Typography.Text>
@@ -139,6 +166,7 @@ export default function UserManagement() {
           bordered
         />
       </div>
+
       {/* 🔹 Modal Edit User */}
       <Modal
         title="Edit User"

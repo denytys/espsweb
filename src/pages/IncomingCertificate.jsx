@@ -9,6 +9,7 @@ import {
   Tag,
   Button,
   message,
+  Card,
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -258,7 +259,7 @@ export default function IncomingCertificate() {
       {/* Modal Detail Record */}
       <Modal
         title={
-          <div className="bg-gray-100 px-3 py-2 rounded font-semibold">
+          <div className="px-2 py-2 bg-gray-400/10 rounded font-semibold">
             Detail Data
           </div>
         }
@@ -274,10 +275,10 @@ export default function IncomingCertificate() {
                 key={key}
                 className="flex ml-2 border-b border-gray-200 py-1"
               >
-                <div className="w-1/3 font-semibold capitalize">
+                <div className="w-1/4 font-semibold capitalize">
                   {key.replace(/_/g, " ")}
                 </div>
-                <div className="w-2/3 break-words">
+                <div className="w-3/4 break-words">
                   {key === "xml" || key === "xmlsigned" ? (
                     xmlContent && xmlContent.key === key ? (
                       <div>
@@ -297,7 +298,7 @@ export default function IncomingCertificate() {
                         >
                           Copy {key}
                         </Button>
-                        <pre className="mt-2 p-2 bg-gray-100 rounded max-h-40 overflow-y-auto text-xs">
+                        <pre className="mt-2 p-2 border-1 border-gray-400 rounded max-h-40 overflow-y-auto text-xs">
                           {xmlContent.value}
                         </pre>
                       </div>
@@ -339,7 +340,7 @@ export default function IncomingCertificate() {
       </Modal>
 
       {/* Ecert In */}
-      <div className="p-3 bg-white rounded-xl shadow-sm mb-4">
+      <Card className="p-3 shadow-sm !mb-4">
         <div className="flex flex-wrap gap-2 justify-between mb-2">
           <h3 className="text-lg font-semibold ml-1">Ecert In</h3>
           <div className="flex flex-wrap gap-2">
@@ -371,10 +372,10 @@ export default function IncomingCertificate() {
           }}
           bordered
         />
-      </div>
+      </Card>
 
       {/* Ephyto In */}
-      <div className="p-3 bg-white rounded-xl shadow-sm">
+      <Card className="p-3 shadow-sm">
         <div className="flex flex-wrap gap-2 justify-between mb-2">
           <h3 className="text-lg font-semibold ml-1">Ephyto In</h3>
           <div className="flex flex-wrap gap-2">
@@ -406,7 +407,7 @@ export default function IncomingCertificate() {
           }}
           bordered
         />
-      </div>
+      </Card>
     </div>
   );
 }

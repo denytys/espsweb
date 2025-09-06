@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { RightCircleOutlined, LeftCircleOutlined } from "@ant-design/icons";
-import { Button, Menu, Layout } from "antd";
+import {
+  RightCircleOutlined,
+  LeftCircleOutlined,
+  BulbOutlined,
+} from "@ant-design/icons";
+import { Button, Menu, Layout, Switch, ConfigProvider, theme } from "antd";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
 import {
@@ -8,17 +12,24 @@ import {
   FolderSymlink,
   LayoutDashboard,
   Settings,
+  Moon,
+  Sun,
 } from "lucide-react";
 
 const { Sider, Content } = Layout;
 
-export default function Home({ darkMode, setDarkMode }) {
+export default function Home() {
   const [collapsed, setCollapsed] = useState(false);
+  const [menuTheme, setMenuTheme] = useState("light");
   const navigate = useNavigate();
   const location = useLocation();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
+  };
+
+  const toggleTheme = (checked) => {
+    setMenuTheme(checked ? "dark" : "light");
   };
 
   const items = [
@@ -54,44 +65,63 @@ export default function Home({ darkMode, setDarkMode }) {
   };
 
   return (
-    <Layout className="w-full min-h-screen text-left">
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        trigger={null}
-        theme={darkMode ? "dark" : "light"}
-      >
-        <div className="flex justify-start p-2">
-          <img src="logo_login.png" alt="logo" width="100" className="mb-1" />
-        </div>
-
-        <div className="p-2 text-left">
-          <Button type="primary" onClick={toggleCollapsed}>
-            {collapsed ? <RightCircleOutlined /> : <LeftCircleOutlined />}
-          </Button>
-        </div>
-        <Menu
-          mode="inline"
-          theme={darkMode ? "dark" : "light"}
-          items={items}
-          onClick={onMenuClick}
-          selectedKeys={[location.pathname.substring(1)]}
-          style={{ fontSize: "12px" }}
-        />
-      </Sider>
-      <Layout>
-        {/* Header global */}
-        <Header />
-        <Content
-          className={
-            darkMode
-              ? "bg-gray-900 text-white p-2"
-              : "bg-gray-100 text-black p-2"
-          }
+    <ConfigProvider
+      theme={{
+        algorithm:
+          menuTheme === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      }}
+    >
+      <Layout className="w-full min-h-screen text-left">
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          trigger={null}
+          theme={menuTheme}
         >
-          <Outlet />
-        </Content>
+          <div className="p-2 flex justify-between items-center">
+            <Button type="primary" onClick={() => setCollapsed(!collapsed)}>
+              {collapsed ? <RightCircleOutlined /> : <LeftCircleOutlined />}
+            </Button>
+
+            {!collapsed && (
+              <Switch
+                checked={menuTheme === "dark"}
+                onChange={toggleTheme}
+                checkedChildren={
+                  <div className="flex items-center justify-center">
+                    <Moon size={14} className="text-white mt-1" />
+                  </div>
+                }
+                unCheckedChildren={
+                  <div className="flex items-center justify-center">
+                    <Sun size={14} className="text-white mt-1" />
+                  </div>
+                }
+              />
+            )}
+          </div>
+
+          <Menu
+            mode="inline"
+            theme={menuTheme}
+            items={items}
+            onClick={onMenuClick}
+            selectedKeys={[location.pathname.substring(1)]}
+            style={{
+              fontSize: "11px",
+              background: "transparent",
+              border: "none",
+            }}
+          />
+        </Sider>
+
+        <Layout>
+          <Header menuTheme={menuTheme} setMenuTheme={setMenuTheme} />
+          <Content>
+            <Outlet context={{ menuTheme, setMenuTheme }} />
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </ConfigProvider>
   );
 }

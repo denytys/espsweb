@@ -11,6 +11,7 @@ import {
   Select,
   Row,
   Col,
+  Card,
 } from "antd";
 import countryMap from "../utils/CountryMap";
 import { FilePenLine } from "lucide-react";
@@ -170,10 +171,10 @@ export default function NegaraMitra() {
 
   const columns = [
     { title: "Negara", dataIndex: "negara", key: "negara" },
-    { title: "Dokumen", dataIndex: "doc", key: "doc" },
+    { title: "Doc", dataIndex: "doc", key: "doc" },
     { title: "Via", dataIndex: "via", key: "via" },
     {
-      title: "Action",
+      title: "Act",
       key: "action",
       render: (_, record) => (
         <div
@@ -192,9 +193,9 @@ export default function NegaraMitra() {
   };
 
   return (
-    <div className="w-full min-h-screen p-2">
+    <div className="w-full min-h-screen p-2 space-y-4">
       {contextHolder}
-      <div className="bg-white shadow rounded-lg p-4 mb-4">
+      <Card className="shadow rounded-lg p-4 !mb-4">
         <div className="border-b border-gray-200 pb-2 items-center gap-2 mb-4">
           <Typography.Text strong className="text-base">
             Form Input Negara Mitra
@@ -219,7 +220,7 @@ export default function NegaraMitra() {
             </Col>
 
             <Col xs={24} md={8}>
-              <Form.Item label="Dokumen" name="Doc">
+              <Form.Item label="Doc" name="Doc">
                 <Select value={doc} onChange={(value) => setDoc(value)}>
                   <Option value="KH">KH</Option>
                   <Option value="KI">KI</Option>
@@ -246,11 +247,11 @@ export default function NegaraMitra() {
             <Button onClick={() => form.resetFields()}>Cancel</Button>
           </div>
         </Form>
-      </div>
+      </Card>
 
       {previewData.length > 0 && (
-        <div className="bg-white shadow rounded-lg p-4">
-          <div className="items-center border-b border-gray-200 pb-2 gap-2 mb-4">
+        <Card className="shadow rounded-lg p-4">
+          <div className="items-center border-b border-gray-200 pb-2 gap-1 mb-2">
             <Typography.Text strong className="text-base">
               Data Negara Mitra
             </Typography.Text>
@@ -262,7 +263,7 @@ export default function NegaraMitra() {
             onChange={handleTableChange}
             rowKey="key"
           />
-        </div>
+        </Card>
       )}
 
       {/* 🔹 Modal Edit Negara Mitra */}
@@ -290,7 +291,7 @@ export default function NegaraMitra() {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Dokumen" name="doc">
+          <Form.Item label="Doc" name="doc">
             <Select>
               <Select.Option value="KH">KH</Select.Option>
               <Select.Option value="KI">KI</Select.Option>

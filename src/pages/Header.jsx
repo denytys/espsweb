@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { logDev } from "../utils/logDev";
+import { Card } from "antd";
 
-export default function Header() {
+export default function Header({ menuTheme, setMenuTheme }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -52,35 +53,59 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-blue-50/40 shadow-lg px-6 py-3 flex justify-end items-center relative">
-      {/* Dropdown User */}
-      <button
-        onClick={toggleDropdown}
-        className="flex items-center space-x-2 focus:outline-none cursor-pointer select-none"
-      >
-        <div className="w-8 h-8 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center uppercase">
-          {user?.nama ? user.nama.charAt(0) : "U"}
+    <Card
+      bodyStyle={{ padding: "6px" }}
+      headStyle={{ padding: "0", borderBottom: "none" }}
+      style={{
+        borderRadius: "0 0 12px 12px",
+      }}
+      className="shadow-none border-none rounded-b-xl"
+    >
+      <div className="flex justify-between items-center">
+        <div>
+          <img src="logo_login.png" alt="logo" width="100" />
         </div>
-        <span className="text-xs hidden sm:block">{user?.nama || "User"}</span>
-        <svg
-          className={`w-4 h-4 transition-transform duration-200 ${
-            dropdownOpen ? "rotate-180" : ""
-          }`}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
 
+        {/* Dropdown User */}
+        <button
+          onClick={toggleDropdown}
+          className="flex items-center space-x-1 focus:outline-none cursor-pointer select-none"
+        >
+          <div className="w-7 h-7 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center uppercase">
+            {user?.nama ? user.nama.charAt(0) : "U"}
+          </div>
+          <span
+            className={`text-xs hidden sm:block ${
+              menuTheme === "dark" ? "text-white" : "text-black"
+            }`}
+          >
+            {user?.nama || "User"}
+          </span>
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${
+              dropdownOpen ? "rotate-180" : ""
+            }`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+      </div>
+
+      {/* Dropdown */}
       <div
-        className={`absolute right-0 top-full mt-1 w-32 bg-white/85 shadow-xl rounded-lg z-50 text-sm text-gray-800 transform transition-all duration-200 ease-out origin-top-right ${
+        className={`absolute right-0 top-full mt-1 w-27 ${
+          menuTheme === "dark"
+            ? "bg-gray-800 text-white"
+            : "bg-white text-gray-800"
+        } shadow-xl rounded-lg z-50 text-sm transform transition-all duration-200 ease-out origin-top-right ${
           dropdownOpen
             ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
             : "opacity-0 scale-95 translate-y-4 pointer-events-none"
@@ -104,6 +129,6 @@ export default function Header() {
           Logout
         </button>
       </div>
-    </header>
+    </Card>
   );
 }

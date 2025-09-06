@@ -1,7 +1,7 @@
 // src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Table, Select } from "antd";
+import { Table, Select, Card } from "antd";
 import axios from "axios";
 import {
   LineChart,
@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import countryMap from "../utils/CountryMap";
 import { logDev } from "../utils/logDev";
+import { useOutletContext } from "react-router-dom";
 
 export default function Dashboard() {
   const currentYear = new Date().getFullYear();
@@ -26,6 +27,7 @@ export default function Dashboard() {
   const [tableData, setTableData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const token = sessionStorage.getItem("token");
+  const { menuTheme } = useOutletContext();
 
   const monthNames = [
     "Jan",
@@ -134,15 +136,19 @@ export default function Dashboard() {
   return (
     <div className="w-full min-h-screen p-2">
       {/* Row 1: Stats */}
-      <div className="bg-white rounded-xl shadow w-full">
+      <Card className="shadow w-full">
         <h2 className="font-semibold ml-5 mb-2 pt-3">
           Total Ecert dan Ephyto {statsData.year}
         </h2>
-        <div className="flex flex-col md:flex-row items-center justify-center p-2 gap-1 md:gap-4">
+        <div className="flex flex-col md:flex-row items-center justify-center p-2 gap-1 md:gap-2">
           {stats.map((stat) => (
             <div
               key={stat.title}
-              className="bg-gray-100 pl-4 pr-35 pt-4 pb-4 gap-3 flex flex-row mb-4 rounded-xl"
+              className={`pl-2 pr-33 pt-4 pb-4 gap-3 flex flex-row mb-4 rounded-xl ml-2 mr-2 w-full ${
+                menuTheme === "dark"
+                  ? "bg-gray-800 text-white"
+                  : "bg-gray-100 text-black"
+              }`}
             >
               <div
                 className={`${stat.color} text-white w-8 h-8 flex items-center justify-center rounded-full text-lg`}
@@ -151,17 +157,19 @@ export default function Dashboard() {
               </div>
               <div className="flex flex-col">
                 <span className="text-xs">{stat.title}</span>
-                <span className="text-xl font-bold">{stat.value}</span>
+                <span className="text-xl font-bold">
+                  {Number(stat.value || 0).toLocaleString("id-ID")}
+                </span>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
       {/* Row 2: Chart + Table */}
       <div className="flex flex-col md:flex-row gap-4 mt-4">
         {/* Table Card */}
-        <div className="bg-white rounded-xl p-3 shadow w-full md:w-110">
+        <Card className="p-3 shadow w-full md:w-110">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-semibold ml-2">Top Negara {statsData.year}</h2>
             <Select
@@ -187,10 +195,10 @@ export default function Dashboard() {
               pageSizeOptions: ["5", "10", "20"],
             }}
           />
-        </div>
+        </Card>
 
         {/* Chart Card */}
-        <div className="bg-white rounded-xl p-3 shadow w-full md:w-200">
+        <Card className="p-3 shadow w-full md:w-200">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-semibold ml-2">Grafik Bulanan</h2>
             <div className="flex gap-2">
@@ -238,7 +246,7 @@ export default function Dashboard() {
               />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </Card>
       </div>
     </div>
   );
