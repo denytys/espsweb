@@ -98,43 +98,53 @@ export default function OutgoingCertificate() {
     );
   };
 
-  const matchesAdvancedFilters = (row, dateRange) => {
-    if (
-      !dateRange ||
-      dateRange.length !== 2 ||
-      !dateRange[0] ||
-      !dateRange[1]
-    ) {
-      return true; // langka filter tanggal
+  const matchesAdvancedFilters = (row, dateRange, selectedUPT) => {
+    // filter tanggal
+    if (dateRange && dateRange.length === 2 && dateRange[0] && dateRange[1]) {
+      const rowDate = dayjs(row.tgl_cert, "YYYY-MM-DD");
+      if (
+        !(
+          rowDate.isValid() &&
+          rowDate.isSameOrAfter(dateRange[0].startOf("day")) &&
+          rowDate.isSameOrBefore(dateRange[1].endOf("day"))
+        )
+      ) {
+        return false;
+      }
     }
 
-    const rowDate = dayjs(row.tgl_cert, "YYYY-MM-DD"); // madakena format tanggalan
-    return (
-      rowDate.isValid() &&
-      rowDate.isSameOrAfter(dateRange[0].startOf("day")) &&
-      rowDate.isSameOrBefore(dateRange[1].endOf("day"))
-    );
+    // filter UPT
+    if (selectedUPT) {
+      const rowUPT = uptMap[row.upt] || row.upt; // pastikan pakai nama, bukan kode
+      return rowUPT === selectedUPT;
+    }
+
+    return true;
   };
 
   const eahoutDataSource = eahoutData
-    .filter((r) => matchesSearch(r, searcheah)) // Golet text
-    .filter((r) =>
-      matchesAdvancedFilters(r, selectedeahDateRange, selectedeahUPT)
-    ) // Filter tanggalan karo UPT
     .map((row, i) => ({
       key: row.id_cert ?? `${row.no_cert ?? "eah"}-${i}`,
       ...row,
-    }));
+      neg_tuju: countryMap[row.neg_tuju] || row.neg_tuju,
+      upt: uptMap[row.upt] || row.upt,
+    }))
+    .filter((r) => matchesSearch(r, searcheah))
+    .filter((r) =>
+      matchesAdvancedFilters(r, selectedeahDateRange, selectedeahUPT)
+    );
 
   const ephytooutDataSource = ephytooutData
-    .filter((r) => matchesSearch(r, searchEphyto)) // Golet text
+    .map((row, i) => ({
+      key: row.id_cert ?? `${row.no_cert ?? "ephyto"}-${i}`,
+      ...row,
+      neg_tuju: countryMap[row.neg_tuju] || row.neg_tuju,
+      upt: uptMap[row.upt] || row.upt,
+    }))
+    .filter((r) => matchesSearch(r, searchEphyto))
     .filter((r) =>
       matchesAdvancedFilters(r, selectedEphytoDateRange, selectedEphytoUPT)
-    ) // Filter tanggalan karo UPT
-    .map((row, i) => ({
-      key: row.id_hub ?? `${row.no_cert ?? "ephyto"}-${i}`,
-      ...row,
-    }));
+    );
 
   const smallCellStyle = { fontSize: "12px", padding: "8px 16px" };
 
@@ -384,12 +394,15 @@ export default function OutgoingCertificate() {
             <Select
               allowClear
               placeholder="Pilih UPT"
-              onChange={(value) => setSelectedeahUPT(value)} // UPT ning kene
-              options={[...new Set(eahoutData.map((d) => d.upt))]
+              onChange={(value) => setSelectedeahUPT(value)}
+              options={[
+                ...new Set(eahoutData.map((d) => uptMap[d.upt] || d.upt)),
+              ]
                 .filter(Boolean)
                 .map((upt) => ({ label: upt, value: upt }))}
-              style={{ width: 150, marginBottom: 8 }}
+              style={{ width: 200, marginBottom: 8 }}
             />
+
             <Input.Search
               placeholder="Search eah Out..."
               allowClear
@@ -402,16 +415,10 @@ export default function OutgoingCertificate() {
 
         <Table
           columns={eahColumns}
-          dataSource={eahoutDataSource.map((item, idx) => ({
-            key: idx,
-            ...item,
-            neg_tuju: countryMap[item.neg_tuju] || item.neg_tuju,
-            upt: uptMap[item.upt] || item.upt,
-          }))}
+          dataSource={eahoutDataSource}
           pagination={{
             pageSize: 5,
-            showSizeChanger: true,
-            pageSizeOptions: ["5", "10", "20"],
+            showSizeChanger: false,
           }}
           bordered
         />
@@ -430,12 +437,15 @@ export default function OutgoingCertificate() {
             <Select
               allowClear
               placeholder="Pilih UPT"
-              onChange={(value) => setSelectedEphytoUPT(value)} // UPT ning kene
-              options={[...new Set(ephytooutData.map((d) => d.upt))]
+              onChange={(value) => setSelectedEphytoUPT(value)}
+              options={[
+                ...new Set(ephytooutData.map((d) => uptMap[d.upt] || d.upt)),
+              ]
                 .filter(Boolean)
                 .map((upt) => ({ label: upt, value: upt }))}
-              style={{ width: 150, marginBottom: 8 }}
+              style={{ width: 200, marginBottom: 8 }}
             />
+
             <Input.Search
               placeholder="Search eah Out..."
               allowClear
@@ -447,16 +457,10 @@ export default function OutgoingCertificate() {
         </div>
         <Table
           columns={ephytoColumns}
-          dataSource={ephytooutDataSource.map((item, idx) => ({
-            key: idx,
-            ...item,
-            neg_tuju: countryMap[item.neg_tuju] || item.neg_tuju,
-            upt: uptMap[item.upt] || item.upt,
-          }))}
+          dataSource={ephytooutDataSource}
           pagination={{
             pageSize: 5,
-            showSizeChanger: true,
-            pageSizeOptions: ["5", "10", "20"],
+            showSizeChanger: false,
           }}
           bordered
         />

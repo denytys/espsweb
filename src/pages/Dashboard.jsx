@@ -200,8 +200,7 @@ export default function Dashboard() {
             }))}
             pagination={{
               pageSize: 5,
-              showSizeChanger: true,
-              pageSizeOptions: ["5", "10", "20"],
+              showSizeChanger: false,
             }}
           />
         </Card>

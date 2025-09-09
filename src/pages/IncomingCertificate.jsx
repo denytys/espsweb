@@ -367,8 +367,7 @@ export default function IncomingCertificate() {
           }))}
           pagination={{
             pageSize: 5,
-            showSizeChanger: true,
-            pageSizeOptions: ["5", "10", "20"],
+            showSizeChanger: false,
           }}
           bordered
         />
@@ -402,8 +401,7 @@ export default function IncomingCertificate() {
           }))}
           pagination={{
             pageSize: 5,
-            showSizeChanger: true,
-            pageSizeOptions: ["5", "10", "20"],
+            showSizeChanger: false,
           }}
           bordered
         />
