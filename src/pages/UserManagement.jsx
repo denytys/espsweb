@@ -146,7 +146,7 @@ export default function UserManagement() {
           background: antdToken.colorBgContainer,
           boxShadow: antdToken.boxShadow,
           borderRadius: antdToken.borderRadiusLG,
-          padding: 16,
+          padding: 20,
         }}
       >
         <div
@@ -164,6 +164,7 @@ export default function UserManagement() {
           rowKey="username"
           loading={loading}
           bordered
+          size="small"
         />
       </div>
 

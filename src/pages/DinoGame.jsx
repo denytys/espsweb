@@ -257,7 +257,7 @@ export default function DinoGame({ resetKey }) {
           loop();
         }
       } else {
-        setErrorMsg("❌ Yah.. jawaban salah!");
+        setErrorMsg("Yah.. jawaban salah!");
       }
     }
 
@@ -314,8 +314,8 @@ export default function DinoGame({ resetKey }) {
       {errorMsg && (
         <div className="mt-3 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg flex justify-between items-center w-80">
           <span>{errorMsg}</span>
-          <button onClick={() => setErrorMsg("")} className="ml-4 font-bold">
-            ✖
+          <button onClick={() => setErrorMsg("")} className="ml-4 p-1">
+            X
           </button>
         </div>
       )}

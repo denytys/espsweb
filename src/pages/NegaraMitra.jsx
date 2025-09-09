@@ -195,7 +195,7 @@ export default function NegaraMitra() {
   return (
     <div className="w-full min-h-screen p-2 space-y-4">
       {contextHolder}
-      <Card className="shadow rounded-lg p-4 !mb-4">
+      <Card className="shadow rounded-lg p-4 !mb-3">
         <div className="border-b border-gray-200 pb-2 items-center gap-2 mb-4">
           <Typography.Text strong className="text-base">
             Form Input Negara Mitra
@@ -262,6 +262,7 @@ export default function NegaraMitra() {
             pagination={pagination}
             onChange={handleTableChange}
             rowKey="key"
+            size="small"
           />
         </Card>
       )}

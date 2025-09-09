@@ -60,8 +60,10 @@ export default function Header({ menuTheme, setMenuTheme }) {
   return (
     <>
       <Card
-        bodyStyle={{ padding: "6px" }}
-        headStyle={{ padding: "0", borderBottom: "none" }}
+        styles={{
+          body: { padding: "6px" },
+          header: { padding: "0", borderBottom: "none" },
+        }}
         style={{ borderRadius: "0 0 12px 12px" }}
         className="shadow-none border-none rounded-b-xl relative"
       >

@@ -137,14 +137,14 @@ export default function Dashboard() {
     <div className="w-full min-h-screen p-2">
       {/* Row 1: Stats */}
       <Card className="shadow w-full">
-        <h2 className="font-semibold ml-5 mb-2 pt-3">
+        <h2 className="font-semibold ml-5 mb-2 pt-1">
           Total Ecert dan Ephyto {statsData.year}
         </h2>
         <div className="flex flex-col md:flex-row items-center justify-center p-2 gap-2 md:gap-4">
           {stats.map((stat) => (
             <div
               key={stat.title}
-              className={`pl-2 pr-12 md:pr-33 pt-4 pb-4 gap-3 flex flex-row mb-4 rounded-xl w-full ${
+              className={`pl-2 pr-12 md:pr-33 pt-4 pb-4 gap-3 flex flex-row mb-1 rounded-xl w-full ${
                 menuTheme === "dark"
                   ? "bg-gray-800 text-white"
                   : "bg-gray-100 text-black"
@@ -167,7 +167,7 @@ export default function Dashboard() {
       </Card>
 
       {/* Row 2: Chart + Table */}
-      <div className="flex flex-col md:flex-row gap-4 mt-4">
+      <div className="flex flex-col md:flex-row gap-3 mt-3">
         {/* Table Card */}
         <Card className="p-3 shadow w-full md:w-110">
           <div className="flex justify-between items-center mb-4">
@@ -175,11 +175,20 @@ export default function Dashboard() {
             <Select
               value={selectedChart}
               onChange={(value) => setSelectedChart(value)}
+              style={{ width: 90, height: 25, fontSize: "12px" }}
             >
-              <Select.Option value="ecertin">Ecert In</Select.Option>
-              <Select.Option value="ephytoin">Ephyto In</Select.Option>
-              <Select.Option value="eahout">Ecert Out</Select.Option>
-              <Select.Option value="ephytoout">Ephyto Out</Select.Option>
+              <Select.Option value="ecertin" style={{ fontSize: "12px" }}>
+                Ecert In
+              </Select.Option>
+              <Select.Option value="ephytoin" style={{ fontSize: "12px" }}>
+                Ephyto In
+              </Select.Option>
+              <Select.Option value="eahout" style={{ fontSize: "12px" }}>
+                Ecert Out
+              </Select.Option>
+              <Select.Option value="ephytoout" style={{ fontSize: "12px" }}>
+                Ephyto Out
+              </Select.Option>
             </Select>
           </div>
           <Table
@@ -205,20 +214,32 @@ export default function Dashboard() {
               <Select
                 value={selectedType}
                 onChange={(val) => setSelectedType(val)}
-                style={{ width: 90 }}
+                style={{ width: 90, height: 25, fontSize: "12px" }}
               >
-                <Select.Option value="ecertin">Ecert In</Select.Option>
-                <Select.Option value="ephytoin">Ephyto In</Select.Option>
-                <Select.Option value="eahout">Ecert Out</Select.Option>
-                <Select.Option value="ephytoout">Ephyto Out</Select.Option>
+                <Select.Option value="ecertin" style={{ fontSize: "12px" }}>
+                  Ecert In
+                </Select.Option>
+                <Select.Option value="ephytoin" style={{ fontSize: "12px" }}>
+                  Ephyto In
+                </Select.Option>
+                <Select.Option value="eahout" style={{ fontSize: "12px" }}>
+                  Ecert Out
+                </Select.Option>
+                <Select.Option value="ephytoout" style={{ fontSize: "12px" }}>
+                  Ephyto Out
+                </Select.Option>
               </Select>
               <Select
                 value={selectedYear}
                 onChange={(val) => setSelectedYear(val)}
-                style={{ width: 90 }}
+                style={{ width: 80, height: 25, fontSize: "12px" }}
               >
                 {[2024, 2025].map((year) => (
-                  <Select.Option key={year} value={year}>
+                  <Select.Option
+                    key={year}
+                    value={year}
+                    style={{ fontSize: "12px" }}
+                  >
                     {year}
                   </Select.Option>
                 ))}
@@ -231,13 +252,15 @@ export default function Dashboard() {
               <XAxis
                 dataKey="bulan"
                 tickFormatter={(month) => monthNames[month - 1]}
+                tick={{ fontSize: 12 }}
               />
-              <YAxis />
+              <YAxis tick={{ fontSize: 11 }} />
               <Tooltip
                 formatter={(value) => value.toLocaleString()}
                 labelFormatter={(month) => monthNames[month - 1]}
+                contentStyle={{ fontSize: "12px" }}
               />
-              <Legend />
+              <Legend wrapperStyle={{ fontSize: "12px" }} />
               <Line
                 type="monotone"
                 dataKey="jumlah"

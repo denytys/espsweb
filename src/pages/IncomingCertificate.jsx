@@ -340,7 +340,7 @@ export default function IncomingCertificate() {
       </Modal>
 
       {/* Ecert In */}
-      <Card className="p-3 shadow-sm !mb-4">
+      <Card className="p-3 shadow-sm !mb-3">
         <div className="flex flex-wrap gap-2 justify-between mb-2">
           <h3 className="text-lg font-semibold ml-1">Ecert In</h3>
           <div className="flex flex-wrap gap-2">
