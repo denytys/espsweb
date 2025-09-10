@@ -97,32 +97,38 @@ export default function UserManagement() {
       title: "Username",
       dataIndex: "username",
       key: "username",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
     },
     {
       title: "Nama Lengkap",
       dataIndex: "nama",
       key: "nama",
+      responsive: ["md"],
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      responsive: ["md"],
     },
     {
       title: "Negara",
       dataIndex: "id_country",
       key: "id_country",
+      responsive: ["md"],
       render: (id_country) => uptMap[id_country] || id_country,
     },
     {
       title: "Role",
       dataIndex: "level",
       key: "level",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (level) => <Tag color={roleColors[level] || "blue"}>{level}</Tag>,
     },
     {
       title: "Action",
       key: "action",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
         <div
           onClick={() => handleEdit(record)}
@@ -165,6 +171,8 @@ export default function UserManagement() {
           loading={loading}
           bordered
           size="small"
+          rowClassName={() => "text-xs"}
+          style={{ fontSize: 10 }}
         />
       </div>
 
