@@ -1,4 +1,3 @@
-// src/pages/IncomingCertificate.jsx
 import { useState, useEffect } from "react";
 import {
   Table,
@@ -34,7 +33,6 @@ export default function IncomingCertificate() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
-  // state khusus xml/xmlsigned
   const [xmlLoading, setXmlLoading] = useState(false);
   const [xmlContent, setXmlContent] = useState(null);
 
@@ -77,7 +75,7 @@ export default function IncomingCertificate() {
     fetchData();
     const interval = setInterval(() => {
       fetchData();
-    }, 300000); // refresh tiap 5 menit
+    }, 300000);
     return () => clearInterval(interval);
   }, []);
 
@@ -133,7 +131,7 @@ export default function IncomingCertificate() {
       xmlsigned: null,
     });
     setIsDetailModalOpen(true);
-    setXmlContent(null); // reset tiap kali buka modal baru
+    setXmlContent(null);
   };
 
   const handleCancelDetail = () => {
@@ -142,7 +140,6 @@ export default function IncomingCertificate() {
     setXmlContent(null);
   };
 
-  // handler load xml/xmlsigned manual
   const handleLoadXml = async (id, keyName, source) => {
     setXmlLoading(true);
     try {
@@ -159,16 +156,47 @@ export default function IncomingCertificate() {
   };
 
   const ecertColumns = [
-    { title: "Tgl Sertifikat", dataIndex: "tgl_cert", key: "tgl_cert" },
-    { title: "No Sertifikat", dataIndex: "no_cert", key: "no_cert" },
-    { title: "Jenis Dokumen", dataIndex: "doc_type", key: "doc_type" },
-    { title: "Komoditas", dataIndex: "komo_eng", key: "komo_eng" },
-    { title: "Pelabuhan Asal", dataIndex: "port_asal", key: "port_asal" },
-    { title: "Pelabuhan Tujuan", dataIndex: "port_tuju", key: "port_tuju" },
+    {
+      title: "Tgl Sertifikat",
+      dataIndex: "tgl_cert",
+      key: "tgl_cert",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "No Sertifikat",
+      dataIndex: "no_cert",
+      key: "no_cert",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "Jenis Dokumen",
+      dataIndex: "doc_type",
+      key: "doc_type",
+      responsive: ["md"],
+    },
+    {
+      title: "Komoditas",
+      dataIndex: "komo_eng",
+      key: "komo_eng",
+      responsive: ["md"],
+    },
+    {
+      title: "Pelabuhan Asal",
+      dataIndex: "port_asal",
+      key: "port_asal",
+      responsive: ["md"],
+    },
+    {
+      title: "Pelabuhan Tujuan",
+      dataIndex: "port_tuju",
+      key: "port_tuju",
+      responsive: ["md"],
+    },
     {
       title: "Act",
       dataIndex: "act",
       key: "act",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
         <div
           onClick={() => handleEdit(record)}
@@ -185,16 +213,47 @@ export default function IncomingCertificate() {
   }));
 
   const ephytoColumns = [
-    { title: "Tgl Sertifikat", dataIndex: "tgl_cert", key: "tgl_cert" },
-    { title: "No Sertifikat", dataIndex: "no_cert", key: "no_cert" },
-    { title: "Jenis Dokumen", dataIndex: "doc_type", key: "doc_type" },
-    { title: "Komoditas", dataIndex: "komo_eng", key: "komo_eng" },
-    { title: "Negara Asal", dataIndex: "neg_asal", key: "neg_asal" },
-    { title: "Pelabuhan Tujuan", dataIndex: "port_tuju", key: "port_tuju" },
+    {
+      title: "Tgl Sertifikat",
+      dataIndex: "tgl_cert",
+      key: "tgl_cert",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "No Sertifikat",
+      dataIndex: "no_cert",
+      key: "no_cert",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "Jenis Dokumen",
+      dataIndex: "doc_type",
+      key: "doc_type",
+      responsive: ["md"],
+    },
+    {
+      title: "Komoditas",
+      dataIndex: "komo_eng",
+      key: "komo_eng",
+      responsive: ["md"],
+    },
+    {
+      title: "Negara Asal",
+      dataIndex: "neg_asal",
+      key: "neg_asal",
+      responsive: ["md"],
+    },
+    {
+      title: "Pelabuhan Tujuan",
+      dataIndex: "port_tuju",
+      key: "port_tuju",
+      responsive: ["md"],
+    },
     {
       title: "Asal Data",
       dataIndex: "data_from",
       key: "data_from",
+      responsive: ["md"],
       render: (detil) => {
         if (typeof detil === "string") {
           const color = viaColors[detil] || "blue";
@@ -225,6 +284,7 @@ export default function IncomingCertificate() {
       title: "Act",
       dataIndex: "act",
       key: "act",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
         <div
           onClick={() => handleEdit(record)}

@@ -178,16 +178,42 @@ export default function OutgoingCertificate() {
   };
 
   const eahColumns = [
-    { title: "Tgl Sertifikat", dataIndex: "tgl_cert", key: "tgl_cert" },
-    { title: "No Sertifikat", dataIndex: "no_cert", key: "no_cert" },
-    { title: "Jenis Dokumen", dataIndex: "doc_type", key: "doc_type" },
-    { title: "Komoditas", dataIndex: "komoditi", key: "komoditi" },
-    { title: "Negara Tujuan", dataIndex: "neg_tuju", key: "neg_tuju" },
-    { title: "UPT/Satpel", dataIndex: "upt", key: "upt" },
+    {
+      title: "Tgl Sertifikat",
+      dataIndex: "tgl_cert",
+      key: "tgl_cert",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "No Sertifikat",
+      dataIndex: "no_cert",
+      key: "no_cert",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "Jenis Dokumen",
+      dataIndex: "doc_type",
+      key: "doc_type",
+      responsive: ["md"],
+    },
+    {
+      title: "Komoditas",
+      dataIndex: "komoditi",
+      key: "komoditi",
+      responsive: ["md"],
+    },
+    {
+      title: "Negara Tujuan",
+      dataIndex: "neg_tuju",
+      key: "neg_tuju",
+      responsive: ["md"],
+    },
+    { title: "UPT/Satpel", dataIndex: "upt", key: "upt", responsive: ["md"] },
     {
       title: "Via Data",
       dataIndex: "send_to",
       key: "send_to",
+      responsive: ["md"],
       render: (detil) => {
         if (typeof detil === "string") {
           const color = viaColors[detil] || "blue";
@@ -218,6 +244,7 @@ export default function OutgoingCertificate() {
       title: "Act",
       dataIndex: "act",
       key: "act",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
         <div
           onClick={() => handleEdit(record, "eahout")}
@@ -234,16 +261,42 @@ export default function OutgoingCertificate() {
   }));
 
   const ephytoColumns = [
-    { title: "Tgl Sertifikat", dataIndex: "tgl_cert", key: "tgl_cert" },
-    { title: "No Sertifikat", dataIndex: "no_cert", key: "no_cert" },
-    { title: "Jenis Dokumen", dataIndex: "doc_type", key: "doc_type" },
-    { title: "Komoditas", dataIndex: "komoditi", key: "komoditi" },
-    { title: "Negara Tujuan", dataIndex: "neg_tuju", key: "neg_tuju" },
-    { title: "UPT/Satpel", dataIndex: "upt", key: "upt" },
+    {
+      title: "Tgl Sertifikat",
+      dataIndex: "tgl_cert",
+      key: "tgl_cert",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "No Sertifikat",
+      dataIndex: "no_cert",
+      key: "no_cert",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+    },
+    {
+      title: "Jenis Dokumen",
+      dataIndex: "doc_type",
+      key: "doc_type",
+      responsive: ["md"],
+    },
+    {
+      title: "Komoditas",
+      dataIndex: "komoditi",
+      key: "komoditi",
+      responsive: ["md"],
+    },
+    {
+      title: "Negara Tujuan",
+      dataIndex: "neg_tuju",
+      key: "neg_tuju",
+      responsive: ["md"],
+    },
+    { title: "UPT/Satpel", dataIndex: "upt", key: "upt", responsive: ["md"] },
     {
       title: "Via Data",
       dataIndex: "send_to",
       key: "send_to",
+      responsive: ["md"],
       render: (detil) => {
         if (typeof detil === "string") {
           const color = viaColors[detil] || "blue";
@@ -274,6 +327,7 @@ export default function OutgoingCertificate() {
       title: "Act",
       dataIndex: "act",
       key: "act",
+      responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
         <div
           onClick={() => handleEdit(record, "ephytoout")}
@@ -384,7 +438,7 @@ export default function OutgoingCertificate() {
       {/* eah Out */}
       <Card className="p-3 shadow-sm !mb-3">
         <div className="flex flex-wrap gap-2 justify-between mb-2">
-          <h3 className="text-lg font-semibold ml-1">Eah Out</h3>
+          <h3 className="text-lg font-semibold ml-1">Ecert Out</h3>
           <div className="flex flex-wrap gap-2">
             <DatePicker.RangePicker
               onChange={(dates) => setSelectedeahDateRange(dates)} // Tanggalan
