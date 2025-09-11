@@ -20,6 +20,12 @@ function PrivateRoute({ children }) {
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
+    if (!token) {
+      setIsAuth(false);
+      setLoading(false);
+      return;
+    }
+
     axios
       .get(`${import.meta.env.VITE_ESPS_BE}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -29,10 +35,9 @@ function PrivateRoute({ children }) {
       })
       .catch(() => setIsAuth(false))
       .finally(() => {
-        // kasih delay 3 detik sebelum selesai loading
         setTimeout(() => setLoading(false), 1000);
       });
-  }, []);
+  }, [token]);
 
   if (loading) {
     return (
