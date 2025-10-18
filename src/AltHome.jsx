@@ -82,28 +82,50 @@ export default function Home() {
     >
       <Layout className="w-full min-h-screen text-left">
         {/* Sider */}
+        <Button
+          type="primary"
+          onClick={handleToggle}
+          style={{
+            position: "fixed",
+            top: 65,
+            left: collapsed ? 16 : 210,
+            zIndex: 1100,
+            transition: "all 0.8s ease",
+            opacity: isTransparent ? 0.3 : 1,
+            backgroundColor: "#1677ff",
+            border: "none",
+            borderRadius: "50%",
+            width: 38,
+            height: 38,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+            color: "#fff",
+            fontSize: 15,
+          }}
+        >
+          {collapsed ? <RightCircleOutlined /> : <LeftCircleOutlined />}
+        </Button>
+
         <Sider
           collapsible
           collapsed={collapsed}
           trigger={null}
           theme={menuTheme}
+          width={200}
+          style={{
+            position: "absolute",
+            height: "100vh",
+            left: collapsed ? "-200px" : "0",
+            top: 0,
+            zIndex: 1000,
+            transition: "all 0.3s ease",
+          }}
         >
-          <div className="p-2 flex justify-between items-center">
-            <Button
-              type="primary"
-              onClick={handleToggle}
-              style={{
-                borderRadius: "50%",
-                width: 34,
-                height: 34,
-                color: "#fff",
-                fontSize: 15,
-              }}
-            >
-              {collapsed ? <RightCircleOutlined /> : <LeftCircleOutlined />}
-            </Button>
+          <div className="mt-4 ml-4 mb-2">
+            <img src="logo_login.png" alt="logo" width="100" />
           </div>
-
           <Menu
             mode="inline"
             theme={menuTheme}
