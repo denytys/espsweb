@@ -64,7 +64,12 @@ export default function Header({ menuTheme, setMenuTheme }) {
           body: { padding: "6px" },
           header: { padding: "0", borderBottom: "none" },
         }}
-        style={{ borderRadius: "0 0 12px 12px" }}
+        style={{
+          borderRadius: "12px 12px 12px 12px",
+          marginLeft: "8px",
+          marginRight: "8px",
+          paddingRight: "8px",
+        }}
         className="shadow-none border-none rounded-b-xl relative"
       >
         <div className="flex justify-between items-center">

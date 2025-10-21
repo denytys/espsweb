@@ -27,8 +27,10 @@ export default function IncomingCertificate() {
   const [searchEcert, setSearchEcert] = useState("");
   const [searchEphyto, setSearchEphyto] = useState("");
   const [loadingModal, setLoadingModal] = useState(false);
-  const [selectedEcertDateRange, setSelectedEcertDateRange] = useState(null);
-  const [selectedEphytoDateRange, setSelectedEphytoDateRange] = useState(null);
+  const [startEcertDate, setStartEcertDate] = useState(null);
+  const [endEcertDate, setEndEcertDate] = useState(null);
+  const [startEphytoDate, setStartEphytoDate] = useState(null);
+  const [endEphytoDate, setEndEphytoDate] = useState(null);
   const token = sessionStorage.getItem("token");
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -82,34 +84,32 @@ export default function IncomingCertificate() {
   const matchesSearch = (row, q) => {
     if (!q) return true;
     const s = q.toLowerCase();
-    return Object.values(row).some((v) =>
-      String(v ?? "")
-        .toLowerCase()
-        .includes(s)
-    );
+    return Object.entries(row).some(([key, v]) => {
+      const valueStr = String(v ?? "").toLowerCase();
+      const mapped =
+        key === "neg_asal"
+          ? (countryMap[v] || v || "").toLowerCase()
+          : valueStr;
+      return valueStr.includes(s) || mapped.includes(s);
+    });
   };
 
-  const matchesAdvancedFilters = (row, dateRange) => {
-    if (
-      !dateRange ||
-      dateRange.length !== 2 ||
-      !dateRange[0] ||
-      !dateRange[1]
-    ) {
-      return true;
-    }
+  const matchesAdvancedFilters = (row, startDate, endDate) => {
+    if (!startDate && !endDate) return true;
 
     const rowDate = dayjs(row.tgl_cert, "YYYY-MM-DD");
-    return (
-      rowDate.isValid() &&
-      rowDate.isSameOrAfter(dateRange[0].startOf("day")) &&
-      rowDate.isSameOrBefore(dateRange[1].endOf("day"))
-    );
+    if (!rowDate.isValid()) return false;
+
+    if (startDate && !rowDate.isSameOrAfter(startDate.startOf("day")))
+      return false;
+    if (endDate && !rowDate.isSameOrBefore(endDate.endOf("day"))) return false;
+
+    return true;
   };
 
   const ecertinDataSource = ecertinData
     .filter((r) => matchesSearch(r, searchEcert))
-    .filter((r) => matchesAdvancedFilters(r, selectedEcertDateRange))
+    .filter((r) => matchesAdvancedFilters(r, startEcertDate, endEcertDate))
     .map((row, i) => ({
       key: row.id_cert ?? `${row.no_cert ?? "ecert"}-${i}`,
       ...row,
@@ -117,7 +117,7 @@ export default function IncomingCertificate() {
 
   const ephytoinDataSource = ephytoinData
     .filter((r) => matchesSearch(r, searchEphyto))
-    .filter((r) => matchesAdvancedFilters(r, selectedEphytoDateRange))
+    .filter((r) => matchesAdvancedFilters(r, startEphytoDate, endEphytoDate))
     .map((row, i) => ({
       key: row.id_hub ?? `${row.no_cert ?? "ephyto"}-${i}`,
       ...row,
@@ -404,11 +404,18 @@ export default function IncomingCertificate() {
         <div className="flex flex-wrap gap-2 justify-between mb-2">
           <h3 className="text-lg font-semibold ml-1">Ecert In</h3>
           <div className="flex flex-wrap gap-2">
-            <DatePicker.RangePicker
-              onChange={(dates) => setSelectedEcertDateRange(dates)}
-              style={{ marginBottom: 8 }}
-              placeholder={["Dari", "Sampai"]}
-            />
+            <div className="flex gap-2 mb-2">
+              <DatePicker
+                value={startEcertDate}
+                onChange={(date) => setStartEcertDate(date)}
+                placeholder="Tgl Awal"
+              />
+              <DatePicker
+                value={endEcertDate}
+                onChange={(date) => setEndEcertDate(date)}
+                placeholder="Tgl Akhir"
+              />
+            </div>
             <Input.Search
               placeholder="Search Ecert In..."
               allowClear
@@ -438,11 +445,18 @@ export default function IncomingCertificate() {
         <div className="flex flex-wrap gap-2 justify-between mb-2">
           <h3 className="text-lg font-semibold ml-1">Ephyto In</h3>
           <div className="flex flex-wrap gap-2">
-            <DatePicker.RangePicker
-              onChange={(dates) => setSelectedEphytoDateRange(dates)}
-              style={{ marginBottom: 8 }}
-              placeholder={["Dari", "Sampai"]}
-            />
+            <div className="flex gap-2 mb-2">
+              <DatePicker
+                value={startEphytoDate}
+                onChange={(date) => setStartEphytoDate(date)}
+                placeholder="Tgl Awal"
+              />
+              <DatePicker
+                value={endEphytoDate}
+                onChange={(date) => setEndEphytoDate(date)}
+                placeholder="Tgl Akhir"
+              />
+            </div>
             <Input.Search
               placeholder="Search Ephyto In..."
               allowClear

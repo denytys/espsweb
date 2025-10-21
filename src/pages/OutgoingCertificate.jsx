@@ -34,8 +34,12 @@ export default function OutgoingCertificate() {
   const [searcheah, setSearcheah] = useState("");
   const [searchEphyto, setSearchEphyto] = useState("");
   const [loadingModal, setLoadingModal] = useState(false);
-  const [selectedeahDateRange, setSelectedeahDateRange] = useState(null);
-  const [selectedEphytoDateRange, setSelectedEphytoDateRange] = useState(null);
+  const [starteahDate, setStarteahDate] = useState(null);
+  const [endeahDate, setEndeahDate] = useState(null);
+  const [startEphytoDate, setStartEphytoDate] = useState(null);
+  const [endEphytoDate, setEndEphytoDate] = useState(null);
+  // const [selectedeahDateRange, setSelectedeahDateRange] = useState(null);
+  // const [selectedEphytoDateRange, setSelectedEphytoDateRange] = useState(null);
   const [selectedeahUPT, setSelectedeahUPT] = useState(null);
   const [selectedEphytoUPT, setSelectedEphytoUPT] = useState(null);
   const token = sessionStorage.getItem("token");
@@ -98,20 +102,16 @@ export default function OutgoingCertificate() {
     );
   };
 
-  const matchesAdvancedFilters = (row, dateRange, selectedUPT) => {
+  const matchesAdvancedFilters = (row, startDate, endDate, selectedUPT) => {
     // filter tanggal
-    if (dateRange && dateRange.length === 2 && dateRange[0] && dateRange[1]) {
-      const rowDate = dayjs(row.tgl_cert, "YYYY-MM-DD");
-      if (
-        !(
-          rowDate.isValid() &&
-          rowDate.isSameOrAfter(dateRange[0].startOf("day")) &&
-          rowDate.isSameOrBefore(dateRange[1].endOf("day"))
-        )
-      ) {
-        return false;
-      }
-    }
+    if (!startDate && !endDate) return true;
+
+    const rowDate = dayjs(row.tgl_cert, "YYYY-MM-DD");
+    if (!rowDate.isValid()) return false;
+
+    if (startDate && !rowDate.isSameOrAfter(startDate.startOf("day")))
+      return false;
+    if (endDate && !rowDate.isSameOrBefore(endDate.endOf("day"))) return false;
 
     // filter UPT
     if (selectedUPT) {
@@ -131,7 +131,7 @@ export default function OutgoingCertificate() {
     }))
     .filter((r) => matchesSearch(r, searcheah))
     .filter((r) =>
-      matchesAdvancedFilters(r, selectedeahDateRange, selectedeahUPT)
+      matchesAdvancedFilters(r, starteahDate, endeahDate, selectedeahUPT)
     );
 
   const ephytooutDataSource = ephytooutData
@@ -143,7 +143,12 @@ export default function OutgoingCertificate() {
     }))
     .filter((r) => matchesSearch(r, searchEphyto))
     .filter((r) =>
-      matchesAdvancedFilters(r, selectedEphytoDateRange, selectedEphytoUPT)
+      matchesAdvancedFilters(
+        r,
+        startEphytoDate,
+        endEphytoDate,
+        selectedEphytoUPT
+      )
     );
 
   const smallCellStyle = { fontSize: "12px", padding: "8px 16px" };
@@ -440,11 +445,18 @@ export default function OutgoingCertificate() {
         <div className="flex flex-wrap gap-2 justify-between mb-2">
           <h3 className="text-lg font-semibold ml-1">Ecert Out</h3>
           <div className="flex flex-wrap gap-2">
-            <DatePicker.RangePicker
-              onChange={(dates) => setSelectedeahDateRange(dates)} // Tanggalan
-              style={{ marginBottom: 8 }}
-              placeholder={["Dari", "Sampai"]}
-            />
+            <div className="flex gap-2 mb-2">
+              <DatePicker
+                value={starteahDate}
+                onChange={(date) => setStarteahDate(date)}
+                placeholder="Tgl Awal"
+              />
+              <DatePicker
+                value={endeahDate}
+                onChange={(date) => setEndeahDate(date)}
+                placeholder="Tgl Akhir"
+              />
+            </div>
             <Select
               allowClear
               placeholder="Pilih UPT"
@@ -483,11 +495,18 @@ export default function OutgoingCertificate() {
         <div className="flex flex-wrap gap-2 justify-between mb-2">
           <h3 className="text-lg font-semibold ml-1">Ephyto Out</h3>
           <div className="flex flex-wrap gap-2">
-            <DatePicker.RangePicker
-              onChange={(dates) => setSelectedEphytoDateRange(dates)} // tanggalan
-              style={{ marginBottom: 8 }}
-              placeholder={["Dari", "Sampai"]}
-            />
+            <div className="flex gap-2 mb-2">
+              <DatePicker
+                value={startEphytoDate}
+                onChange={(date) => setStartEphytoDate(date)}
+                placeholder="Tgl Awal"
+              />
+              <DatePicker
+                value={endEphytoDate}
+                onChange={(date) => setEndEphytoDate(date)}
+                placeholder="Tgl Akhir"
+              />
+            </div>
             <Select
               allowClear
               placeholder="Pilih UPT"
