@@ -31,14 +31,12 @@ export default function Login() {
         typeof res.token === "string" &&
         res.token.includes(".")
       ) {
-        // ✅ Login sukses → reset percobaan salah
         setErrorCount(0);
         sessionStorage.setItem("token", res.token);
         logDev("JWT token tersimpan:", res.token);
         message.success("Login berhasil");
         navigate("/dashboard");
       } else {
-        // ✅ Login gagal (token tidak valid)
         handleWrongPassword(res.message || "Login gagal (token tidak valid)");
       }
     } catch (error) {
@@ -55,12 +53,6 @@ export default function Login() {
     const newCount = errorCount + 1;
     setErrorCount(newCount);
     setIsModalVisible(true);
-
-    if (newCount >= 5) {
-      message.error("Akun diblokir karena salah memasukkan password 5 kali.");
-    }
-
-    logDev(`Percobaan login gagal ke-${newCount}`);
   };
 
   const handleModalClose = () => {
@@ -179,7 +171,7 @@ export default function Login() {
             <p className="text-gray-600 mt-2">
               Percobaan salah ke-{errorCount} dari 5.
             </p>
-            <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-500 w-full">
+            <div className="mt-3 p-3 bg-gray-100 rounded-xl text-sm text-red-500 w-full">
               ⚠️ Jika Anda memasukkan password salah sebanyak{" "}
               <strong>5 kali</strong>, akun akan <b>diblokir</b>.
             </div>

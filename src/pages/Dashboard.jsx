@@ -13,6 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { PanelTopOpen, PlaneLanding, Rocket, Send } from "lucide-react";
 import countryMap from "../utils/CountryMap";
 import { logDev } from "../utils/logDev";
 import { useOutletContext } from "react-router-dom";
@@ -101,25 +102,25 @@ export default function Dashboard() {
     {
       title: "Ecert In",
       value: statsData.ecert_in || 0,
-      icon: <LoginOutlined />,
+      icon: <PlaneLanding />,
       color: "bg-purple-500",
     },
     {
       title: "Ephyto In",
       value: statsData.ephyto_in || 0,
-      icon: <LoginOutlined />,
+      icon: <PanelTopOpen />,
       color: "bg-yellow-500",
     },
     {
       title: "Ecert Out",
       value: statsData.eah_out || 0,
-      icon: <LogoutOutlined />,
+      icon: <Rocket />,
       color: "bg-green-500",
     },
     {
       title: "Ephyto Out",
       value: statsData.ephyto_out || 0,
-      icon: <LogoutOutlined />,
+      icon: <Send />,
       color: "bg-blue-500",
     },
   ];
@@ -137,29 +138,29 @@ export default function Dashboard() {
     <div className="w-full min-h-screen p-2">
       {/* Row 1: Stats */}
       <Card className="shadow w-full">
-        <h2 className="font-semibold ml-5 mb-2 pt-1">
+        <h2 className="font-semibold ml-2 mb-2 pt-1">
           Total Ecert dan Ephyto {statsData.year}
         </h2>
         <div className="flex flex-col md:flex-row items-center justify-center p-2 gap-2 md:gap-4">
           {stats.map((stat) => (
             <div
               key={stat.title}
-              className={`pl-2 pr-12 md:pr-33 pt-4 pb-4 gap-3 flex flex-row mb-1 rounded-xl w-full ${
+              className={`pl-2 pt-4 pb-4 gap-3 flex justify-around mb-1 rounded-xl w-full ${
                 menuTheme === "dark"
                   ? "bg-gray-800 text-white"
                   : "bg-gray-100 text-black"
               }`}
             >
-              <div
-                className={`${stat.color} text-white w-8 h-8 flex items-center justify-center rounded-full text-lg ml-2`}
-              >
-                {stat.icon}
-              </div>
               <div className="flex flex-col">
-                <span className="text-xs">{stat.title}</span>
+                <span className="text-sm">{stat.title}</span>
                 <span className="text-xl font-bold">
                   {Number(stat.value || 0).toLocaleString("id-ID")}
                 </span>
+              </div>
+              <div
+                className={`${stat.color} text-white w-12 h-12 flex items-center justify-center rounded-full text-lg`}
+              >
+                {stat.icon}
               </div>
             </div>
           ))}
