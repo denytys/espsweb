@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { RightCircleOutlined, LeftCircleOutlined } from "@ant-design/icons";
+import {
+  FcHome,
+  FcAcceptDatabase,
+  FcDocument,
+  FcSettings,
+} from "react-icons/fc";
 import { Button, Menu, Layout, ConfigProvider, theme } from "antd";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
-import {
-  FolderOutput,
-  FolderSymlink,
-  LayoutDashboard,
-  Settings,
-} from "lucide-react";
+// import {
+//   FolderOutput,
+//   FolderSymlink,
+//   LayoutDashboard,
+//   Settings,
+// } from "lucide-react";
 
 const { Sider, Content } = Layout;
 
@@ -34,22 +40,22 @@ export default function Home() {
   const items = [
     {
       key: "dashboard",
-      icon: <LayoutDashboard size={16} />,
+      icon: <FcHome size={20} />,
       label: "Dashboard",
     },
     {
       key: "incoming",
-      icon: <FolderSymlink size={16} />,
+      icon: <FcAcceptDatabase size={20} />,
       label: "Incoming Certificate",
     },
     {
       key: "outgoing",
-      icon: <FolderOutput size={16} />,
+      icon: <FcDocument size={20} />,
       label: "Outgoing Certificate",
     },
     {
       key: "admin",
-      icon: <Settings size={16} />,
+      icon: <FcSettings size={20} />,
       label: "Menu Admin",
       children: [
         { key: "admin/admin-mitra", label: "Negara Mitra" },

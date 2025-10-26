@@ -145,7 +145,7 @@ export default function Dashboard() {
           {stats.map((stat) => (
             <div
               key={stat.title}
-              className={`pl-2 pt-4 pb-4 gap-3 flex justify-around mb-1 rounded-xl w-full ${
+              className={`pt-4 pb-4 gap-3 flex justify-around rounded-xl w-full ${
                 menuTheme === "dark"
                   ? "bg-gray-800 text-white"
                   : "bg-gray-100 text-black"
