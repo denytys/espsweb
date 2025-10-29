@@ -35,11 +35,11 @@ export default function Home() {
 
     try {
       const user = JSON.parse(userData);
+      const detil = Array.isArray(user.detil) ? user.detil : [];
 
-      const isAdmin =
-        user.role_name === "ADM-KP" ||
-        user.apps_id === "APP003" ||
-        (user.uname && user.uname.toLowerCase().includes("admin"));
+      const isAdmin = detil.some(
+        (r) => r.role_name === "SA" || r.apps_id === "APP004"
+      );
 
       setHasAdminRole(isAdmin);
     } catch (err) {

@@ -126,10 +126,10 @@ export default function Header({ menuTheme, setMenuTheme }) {
               </button>
 
               <div
-                className={`absolute right-0 top-full mt-1 w-32 ${
+                className={`absolute right-0 top-full mt-3 w-32 ${
                   menuTheme === "dark"
                     ? "bg-gray-800 text-white"
-                    : "bg-white text-gray-800"
+                    : "bg-white/80 text-gray-800"
                 } shadow-xl rounded-lg z-50 text-sm transform transition-all duration-200 ease-out origin-top-right ${
                   dropdownOpen
                     ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
@@ -146,7 +146,7 @@ export default function Header({ menuTheme, setMenuTheme }) {
                 >
                   Special Menu
                 </button>
-                <hr className="my-1 border-gray-200" />
+                {/* <hr className="my-1 border-gray-200" /> */}
                 <button
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-2 text-red-500 hover:bg-blue-300/20 transition"
