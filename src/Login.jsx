@@ -32,7 +32,10 @@ export default function Login() {
         res.token.includes(".")
       ) {
         setErrorCount(0);
+
         sessionStorage.setItem("token", res.token);
+        sessionStorage.setItem("user", JSON.stringify(res.user));
+
         logDev("JWT token tersimpan:", res.token);
         message.success("Login berhasil");
         navigate("/dashboard");

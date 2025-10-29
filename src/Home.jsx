@@ -1,3 +1,4 @@
+// src/Home.jsx
 import React, { useState, useEffect } from "react";
 import { RightCircleOutlined, LeftCircleOutlined } from "@ant-design/icons";
 import {
@@ -6,15 +7,9 @@ import {
   FcDocument,
   FcSettings,
 } from "react-icons/fc";
-import { Button, Menu, Layout, ConfigProvider, theme } from "antd";
+import { Button, Menu, Layout, ConfigProvider, theme, message } from "antd";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
-// import {
-//   FolderOutput,
-//   FolderSymlink,
-//   LayoutDashboard,
-//   Settings,
-// } from "lucide-react";
 
 const { Sider, Content } = Layout;
 
@@ -22,10 +17,39 @@ export default function Home() {
   const [collapsed, setCollapsed] = useState(false);
   const [menuTheme, setMenuTheme] = useState("light");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [isTransparent, setIsTransparent] = useState(false);
+  const [hasAdminRole, setHasAdminRole] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    const userData = sessionStorage.getItem("user");
+
+    if (!token || !userData) {
+      message.warning("Silakan login terlebih dahulu.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const user = JSON.parse(userData);
+
+      const isAdmin =
+        user.role_name === "ADM-KP" ||
+        user.apps_id === "APP003" ||
+        (user.uname && user.uname.toLowerCase().includes("admin"));
+
+      setHasAdminRole(isAdmin);
+    } catch (err) {
+      console.error("Gagal parsing data user:", err);
+      sessionStorage.clear();
+      navigate("/login");
+    } finally {
+      setLoadingUser(false);
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -53,31 +77,35 @@ export default function Home() {
       icon: <FcDocument size={20} />,
       label: "Outgoing Certificate",
     },
-    {
-      key: "admin",
-      icon: <FcSettings size={20} />,
-      label: "Menu Admin",
-      children: [
-        { key: "admin/admin-mitra", label: "Negara Mitra" },
-        { key: "admin/admin-users", label: "User Management" },
-        { key: "admin/admin-settings", label: "Validation Tool" },
-      ],
-    },
+    ...(hasAdminRole
+      ? [
+          {
+            key: "admin",
+            icon: <FcSettings size={20} />,
+            label: "Menu Admin",
+            children: [
+              { key: "admin/admin-mitra", label: "Negara Mitra" },
+              { key: "admin/admin-users", label: "User Management" },
+              { key: "admin/admin-settings", label: "Validation Tool" },
+            ],
+          },
+        ]
+      : []),
   ];
 
-  const onMenuClick = (e) => {
-    navigate(`/${e.key}`);
-  };
+  const onMenuClick = (e) => navigate(`/${e.key}`);
+  const handleToggle = () => setCollapsed((prev) => !prev);
 
-  const handleToggle = () => {
-    setCollapsed(!collapsed);
-
-    setIsTransparent(false);
-
-    setTimeout(() => {
-      setIsTransparent(true);
-    }, 3000);
-  };
+  if (loadingUser) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-600">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p>Memuat data pengguna . . .</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ConfigProvider
@@ -87,7 +115,7 @@ export default function Home() {
       }}
     >
       <Layout className="w-full min-h-screen text-left">
-        {/* Sider */}
+        {/* Sidebar */}
         <Sider
           collapsible
           collapsed={collapsed}
