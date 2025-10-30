@@ -16,7 +16,7 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import countryMap from "../utils/CountryMap";
 import { logDev } from "../utils/logDev";
-import { Eye } from "lucide-react";
+import { Eye, Printer } from "lucide-react";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -173,6 +173,13 @@ export default function IncomingCertificate() {
       dataIndex: "doc_type",
       key: "doc_type",
       responsive: ["md"],
+      render: (text) => {
+        const map = {
+          851: "PC",
+          852: "HC",
+        };
+        return map[text] || text;
+      },
     },
     {
       title: "Komoditas",
@@ -181,9 +188,9 @@ export default function IncomingCertificate() {
       responsive: ["md"],
     },
     {
-      title: "Pelabuhan Asal",
-      dataIndex: "port_asal",
-      key: "port_asal",
+      title: "Negara Asal",
+      dataIndex: "neg_asal",
+      key: "neg_asal",
       responsive: ["md"],
     },
     {
@@ -198,11 +205,20 @@ export default function IncomingCertificate() {
       key: "act",
       responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
-        <div
-          onClick={() => handleEdit(record)}
-          className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
-        >
-          <Eye size={16} />
+        <div className="flex gap-2 justify-center items-center">
+          <div
+            onClick={() => handleEdit(record)}
+            className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          >
+            <Eye size={16} />
+          </div>
+
+          <div
+            onClick={() => handlePrint(record)}
+            className="cursor-pointer bg-gray-200 hover:bg-green-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          >
+            <Printer size={16} />
+          </div>
         </div>
       ),
     },
@@ -230,6 +246,13 @@ export default function IncomingCertificate() {
       dataIndex: "doc_type",
       key: "doc_type",
       responsive: ["md"],
+      render: (text) => {
+        const map = {
+          851: "PC",
+          852: "HC",
+        };
+        return map[text] || text;
+      },
     },
     {
       title: "Komoditas",
@@ -286,11 +309,19 @@ export default function IncomingCertificate() {
       key: "act",
       responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
-        <div
-          onClick={() => handleEdit(record)}
-          className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
-        >
-          <Eye size={16} />
+        <div className="flex gap-2 justify-center items-center">
+          <div
+            onClick={() => handleEdit(record)}
+            className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          >
+            <Eye size={16} />
+          </div>
+          <div
+            onClick={() => handlePrint(record)}
+            className="cursor-pointer bg-gray-200 hover:bg-green-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          >
+            <Printer size={16} />
+          </div>
         </div>
       ),
     },

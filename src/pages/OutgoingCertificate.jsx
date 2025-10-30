@@ -18,7 +18,7 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import countryMap from "../utils/CountryMap";
 import uptMap from "../utils/UptMap";
 import { logDev } from "../utils/logDev";
-import { Eye } from "lucide-react";
+import { Eye, Printer } from "lucide-react";
 import {
   CopyOutlined,
   CheckOutlined,
@@ -200,6 +200,13 @@ export default function OutgoingCertificate() {
       dataIndex: "doc_type",
       key: "doc_type",
       responsive: ["md"],
+      render: (text) => {
+        const map = {
+          851: "PC",
+          852: "HC",
+        };
+        return map[text] || text;
+      },
     },
     {
       title: "Komoditas",
@@ -251,11 +258,19 @@ export default function OutgoingCertificate() {
       key: "act",
       responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
-        <div
-          onClick={() => handleEdit(record, "eahout")}
-          className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
-        >
-          <Eye size={16} />
+        <div className="flex gap-2 justify-center items-center">
+          <div
+            onClick={() => handleEdit(record, "eahout")}
+            className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          >
+            <Eye size={16} />
+          </div>
+          <div
+            onClick={() => handlePrint(record)}
+            className="cursor-pointer bg-gray-200 hover:bg-green-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          >
+            <Printer size={16} />
+          </div>
         </div>
       ),
     },
@@ -283,6 +298,13 @@ export default function OutgoingCertificate() {
       dataIndex: "doc_type",
       key: "doc_type",
       responsive: ["md"],
+      render: (text) => {
+        const map = {
+          851: "PC",
+          852: "HC",
+        };
+        return map[text] || text;
+      },
     },
     {
       title: "Komoditas",
@@ -334,11 +356,19 @@ export default function OutgoingCertificate() {
       key: "act",
       responsive: ["xs", "sm", "md", "lg", "xl"],
       render: (_, record) => (
-        <div
-          onClick={() => handleEdit(record, "ephytoout")}
-          className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
-        >
-          <Eye size={16} />
+        <div className="flex gap-2 justify-center items-center">
+          <div
+            onClick={() => handleEdit(record, "ephytoout")}
+            className="cursor-pointer bg-gray-200 hover:bg-blue-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          >
+            <Eye size={16} />
+          </div>
+          <div
+            onClick={() => handlePrint(record)}
+            className="cursor-pointer bg-gray-200 hover:bg-green-500 text-black hover:text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-200"
+          >
+            <Printer size={16} />
+          </div>
         </div>
       ),
     },

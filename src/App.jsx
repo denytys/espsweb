@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import IncomingCertificate from "./pages/IncomingCertificate";
 import OutgoingCertificate from "./pages/OutgoingCertificate";
 import MenuAdmin from "./pages/MenuAdmin";
+import Maintenance from "./pages/Maintenance";
 import Login from "./Login";
 
 function PrivateRoute({ children }) {
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="incoming" element={<IncomingCertificate />} />
           <Route path="outgoing" element={<OutgoingCertificate />} />
           <Route path="admin/*" element={<MenuAdmin />} />
+          <Route path="pingme" element={<Maintenance />} />
         </Route>
 
         {/* Kalau route tidak ada, redirect ke login */}

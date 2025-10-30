@@ -6,12 +6,13 @@ import {
   FcAcceptDatabase,
   FcDocument,
   FcSettings,
+  FcFaq,
 } from "react-icons/fc";
 import { Button, Menu, Layout, ConfigProvider, theme, message } from "antd";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import Header from "./pages/Header";
 
-const { Sider, Content } = Layout;
+const { Sider, Content, Footer } = Layout;
 
 export default function Home() {
   const [collapsed, setCollapsed] = useState(false);
@@ -93,6 +94,14 @@ export default function Home() {
       : []),
   ];
 
+  const bottomMenuItems = [
+    {
+      key: "pingme",
+      icon: <FcFaq size={20} />,
+      label: "Ping Me!",
+    },
+  ];
+
   const onMenuClick = (e) => navigate(`/${e.key}`);
   const handleToggle = () => setCollapsed((prev) => !prev);
 
@@ -150,6 +159,20 @@ export default function Home() {
               border: "none",
             }}
           />
+          <div className="pb-3">
+            <Menu
+              mode="inline"
+              theme={menuTheme}
+              items={bottomMenuItems}
+              onClick={onMenuClick}
+              selectedKeys={[location.pathname.substring(1)]}
+              style={{
+                fontSize: "11px",
+                background: "transparent",
+                border: "none",
+              }}
+            />
+          </div>
         </Sider>
 
         {/* Main Layout */}
@@ -158,6 +181,17 @@ export default function Home() {
           <Content>
             <Outlet context={{ menuTheme, setMenuTheme }} />
           </Content>
+          <Footer
+            style={{
+              textAlign: "center",
+              fontSize: "12px",
+              color: "#999",
+              background: "transparent",
+              padding: "8px 0",
+            }}
+          >
+            © {new Date().getFullYear()} BARANTIN
+          </Footer>
         </Layout>
       </Layout>
     </ConfigProvider>
