@@ -14,6 +14,7 @@ import OutgoingCertificate from "./pages/OutgoingCertificate";
 import MenuAdmin from "./pages/MenuAdmin";
 import Maintenance from "./pages/Maintenance";
 import Login from "./Login";
+import Assistant from "./pages/Assistant";
 
 function PrivateRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -75,7 +76,7 @@ export default function App() {
           <Route path="incoming" element={<IncomingCertificate />} />
           <Route path="outgoing" element={<OutgoingCertificate />} />
           <Route path="admin/*" element={<MenuAdmin />} />
-          <Route path="pingme" element={<Maintenance />} />
+          <Route path="assistant" element={<Assistant />} />
         </Route>
 
         {/* Kalau route tidak ada, redirect ke login */}

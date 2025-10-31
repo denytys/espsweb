@@ -96,9 +96,9 @@ export default function Home() {
 
   const bottomMenuItems = [
     {
-      key: "pingme",
+      key: "assistant",
       icon: <FcFaq size={20} />,
-      label: "Ping Me!",
+      label: "Assistant",
     },
   ];
 
