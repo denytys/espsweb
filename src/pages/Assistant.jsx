@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Input, Button, Typography, message, Card } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { Input, Button, Typography, message, Card, Popconfirm } from "antd";
+import { SendOutlined, DeleteOutlined } from "@ant-design/icons";
 import { BotMessageSquare, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import { FcFaq } from "react-icons/fc";
 
 const { Title } = Typography;
 
@@ -11,22 +13,28 @@ export default function Assistant() {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "Hai ! Aku Gak Tau Siapa.\nTanyakan aja sesuatu seperti:\n“Berapa total eCert In hari ini?”",
+      text: "Hai! Aku Gak Tau Siapa,\nTanyakan aja sesuatu seperti:\n“Berapa total eCert In hari ini?”",
     },
   ]);
   const [loading, setLoading] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [isInitialRender, setIsInitialRender] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [thinking, setThinking] = useState(false);
   const messagesEndRef = useRef(null);
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
+    if (isInitialRender) {
+      setIsInitialRender(false);
+      return;
+    }
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typing]);
 
   const typeEffect = (text, callback) => {
     setTyping(true);
     let index = 0;
-    const tempText = "";
     const interval = setInterval(() => {
       if (index < text.length) {
         const partial = text.slice(0, index + 1);
@@ -39,9 +47,10 @@ export default function Assistant() {
       } else {
         clearInterval(interval);
         setTyping(false);
+        if (navigator.vibrate) navigator.vibrate(50);
         callback && callback();
       }
-    }, 25);
+    }, 60);
   };
 
   const handleAsk = async () => {
@@ -54,8 +63,18 @@ export default function Assistant() {
     setMessages((prev) => [...prev, newMsg]);
     setQuestion("");
     setLoading(true);
+    setThinking(true);
+    setProgress(0);
+
+    let progressValue = 0;
+    const progressInterval = setInterval(() => {
+      progressValue += 2;
+      setProgress(progressValue);
+      if (progressValue >= 100) clearInterval(progressInterval);
+    }, 60);
 
     try {
+      await new Promise((resolve) => setTimeout(resolve, 4000));
       const res = await axios.get(`${import.meta.env.VITE_ESPS_BE}/assistant`, {
         params: { q: question },
         headers: { Authorization: `Bearer ${token}` },
@@ -67,8 +86,8 @@ export default function Assistant() {
           : "Maaf, saya tidak memahami pertanyaan itu 💬.";
 
       setMessages((prev) => [...prev, { sender: "bot", text: "" }]);
-
       typeEffect(answer);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
       console.error(error);
       message.error("Gagal memproses pertanyaan.");
@@ -77,33 +96,60 @@ export default function Assistant() {
     }
   };
 
-  return (
-    <div className="w-full min-h-screen">
-      <div className="flex justify-center items-center mt-2">
-        <Card
-          className="shadow-lg w-full max-w-lg flex flex-col"
-          style={{
-            borderRadius: 16,
-            height: "auto",
-          }}
-        >
-          {/* Header */}
-          <div className="flex items-center mb-3 border-b pb-2">
-            <BotMessageSquare size={28} className="text-blue-500 mr-2" />
-            <Title level={4} style={{ margin: 0 }}>
-              Assistant
-            </Title>
-          </div>
+  const handleClearChat = () => {
+    setMessages([
+      {
+        sender: "bot",
+        text: "Hai! Aku Gak Tau Siapa,\nTanyakan aja sesuatu seperti:\n“Berapa total eCert In hari ini?”",
+      },
+    ]);
+    message.success("Percakapan telah dihapus 🧹");
+  };
 
-          {/* Chat area */}
-          <div
-            className="flex-1 overflow-y-auto px-2 py-3 space-y-3"
-            style={{ scrollbarWidth: "thin" }}
+  return (
+    <div className="flex flex-col items-center w-full h-full p-4">
+      <Card className="w-full max-w-3xl shadow-md">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-gray-200 pb-2 mb-3">
+          <FcFaq size={24} className="text-blue-500 mr-2" />
+          <Title level={4} style={{ margin: 0 }}>
+            Assistant ESPS
+          </Title>
+          <Popconfirm
+            title="Hapus semua percakapan?"
+            okText="Ya"
+            cancelText="Batal"
+            onConfirm={handleClearChat}
+            placement="bottom"
           >
+            <Button
+              type="text"
+              icon={<DeleteOutlined style={{ color: "red" }} />}
+              title="Clear chat"
+            />
+          </Popconfirm>
+        </div>
+
+        {/* Bar pelangi AI */}
+        {thinking && (
+          <div className="absolute bottom-0 left-0 w-full h-[3px] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-pink-500 via-blue-500 to-green-500 transition-all duration-75 ease-linear"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+        )}
+
+        {/* Chat area */}
+        <div className="space-y-3 h-[60vh] overflow-y-auto mb-4 p-4">
+          <AnimatePresence>
             {messages.map((msg, index) => (
-              <div
+              <motion.div
                 key={index}
-                className={`flex ${
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`flex items-start gap-2 ${
                   msg.sender === "user" ? "justify-end" : "justify-start"
                 }`}
               >
@@ -115,15 +161,18 @@ export default function Assistant() {
                     />
                   </div>
                 )}
+
                 <div
                   className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm whitespace-pre-line shadow-sm ${
                     msg.sender === "user"
                       ? "bg-blue-500 text-white rounded-br-none"
                       : "bg-gray-100 text-gray-800 rounded-bl-none"
                   }`}
-                >
-                  {msg.text}
-                </div>
+                  dangerouslySetInnerHTML={{
+                    __html: msg.text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>"),
+                  }}
+                />
+
                 {msg.sender === "user" && (
                   <div className="ml-2 mt-auto">
                     <User
@@ -132,38 +181,30 @@ export default function Assistant() {
                     />
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))}
+          </AnimatePresence>
 
-            {typing && (
-              <div className="flex items-center space-x-2 ml-8">
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></span>
-                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-300"></span>
-              </div>
-            )}
+          <div ref={messagesEndRef} />
+        </div>
 
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input area */}
-          <div className="flex items-center mt-3 gap-2">
-            <Input
-              placeholder="Ketik pertanyaan kamu..."
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              onPressEnter={handleAsk}
-              disabled={loading}
-            />
-            <Button
-              type="primary"
-              icon={<SendOutlined />}
-              loading={loading}
-              onClick={handleAsk}
-            />
-          </div>
-        </Card>
-      </div>
+        {/* Input area */}
+        <div className="flex items-center mt-3 gap-2">
+          <Input
+            placeholder="Ketik pertanyaan kamu..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            onPressEnter={handleAsk}
+            disabled={loading}
+          />
+          <Button
+            type="primary"
+            icon={<SendOutlined />}
+            loading={loading}
+            onClick={handleAsk}
+          />
+        </div>
+      </Card>
     </div>
   );
 }

@@ -92,9 +92,6 @@ export default function Home() {
           },
         ]
       : []),
-  ];
-
-  const bottomMenuItems = [
     {
       key: "assistant",
       icon: <FcFaq size={20} />,
@@ -159,20 +156,6 @@ export default function Home() {
               border: "none",
             }}
           />
-          <div className="pb-3">
-            <Menu
-              mode="inline"
-              theme={menuTheme}
-              items={bottomMenuItems}
-              onClick={onMenuClick}
-              selectedKeys={[location.pathname.substring(1)]}
-              style={{
-                fontSize: "11px",
-                background: "transparent",
-                border: "none",
-              }}
-            />
-          </div>
         </Sider>
 
         {/* Main Layout */}

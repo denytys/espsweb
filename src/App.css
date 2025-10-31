@@ -37,6 +37,20 @@ body {
   }
 }
 
+@keyframes gradient-move {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-gradient-move {
+  background-size: 200% 100%;
+  animation: gradient-move 0.8s linear infinite;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
