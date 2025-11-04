@@ -9,6 +9,7 @@ import DinoGame from "./DinoGame";
 export default function Header({ menuTheme, setMenuTheme }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [hasAdminRole, setHasAdminRole] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const token = sessionStorage.getItem("token");
@@ -16,15 +17,44 @@ export default function Header({ menuTheme, setMenuTheme }) {
   const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_ESPS_BE}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        if (res.data?.status) setUser(res.data.user);
-        else navigate("/login");
-      })
-      .catch(() => navigate("/login"));
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+
+        const detil = Array.isArray(parsedUser.detil) ? parsedUser.detil : [];
+        const isAdmin = detil.some(
+          (r) => r.role_name === "SA" || r.apps_id === "APP004"
+        );
+        setHasAdminRole(isAdmin);
+      } catch (err) {
+        logDev("Gagal parsing user dari sessionStorage:", err);
+      }
+    }
+
+    if (!userData && token) {
+      axios
+        .get(`${import.meta.env.VITE_ESPS_BE}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          if (res.data?.status) {
+            setUser(res.data.user);
+
+            const detil = Array.isArray(res.data.user.detil)
+              ? res.data.user.detil
+              : [];
+            const isAdmin = detil.some(
+              (r) => r.role_name === "SA" || r.apps_id === "APP004"
+            );
+            setHasAdminRole(isAdmin);
+          } else {
+            navigate("/login");
+          }
+        })
+        .catch(() => navigate("/login"));
+    }
   }, [navigate, token]);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
@@ -137,15 +167,17 @@ export default function Header({ menuTheme, setMenuTheme }) {
                 }`}
                 ref={dropdownRef}
               >
-                <button
-                  onClick={() => {
-                    setDropdownOpen(false);
-                    setIsDinoOpen(true); // buka modal DinoGame
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-blue-300/10 transition"
-                >
-                  Special Menu
-                </button>
+                {hasAdminRole && (
+                  <button
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setIsDinoOpen(true);
+                    }}
+                    className="w-full text-left px-4 py-2 hover:bg-blue-300/10 transition"
+                  >
+                    Special Menu
+                  </button>
+                )}
                 {/* <hr className="my-1 border-gray-200" /> */}
                 <button
                   onClick={handleLogout}
